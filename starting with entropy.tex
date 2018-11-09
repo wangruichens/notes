@@ -1,0 +1,34 @@
+\documentclass{article}
+\author{Ruichen Wang}
+\title{Starts from Entropy}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Mainly about entropy and a brief introduction of its related algorithms.
+Including logistic regression, variational auto encoder ...
+\end{abstract}
+
+\tableofcontents
+\section{What is entropy?} 
+\subsection{Def of information}
+$$I(x)=-logP(x)$$
+\paragraph{•}
+Given x is some event, P(x) is probability which event x happens.
+\subsection{Why using '-logP(x)'?}
+\paragraph{•}
+The reason we pick -log as the transform function can be explained as follows:
+\begin{itemize}
+\item Lower probability, higher information
+\item Higher probability, lower information
+\item Multi-event happens, the probability is multiplied. the information is summed
+\end{itemize}
+\paragraph{Mathematics Explaination}
+\paragraph{•}
+As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
+$$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
+$$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
+\section{Average of Information(Entorpy)}
+
+\end{document}
