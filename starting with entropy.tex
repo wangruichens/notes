@@ -1,34 +1,115 @@
 \documentclass{article}
+\usepackage{graphics}
+\usepackage{indentfirst}
+\usepackage{amsmath}
 \author{Ruichen Wang}
 \title{Starts from Entropy}
 
 \begin{document}
 \maketitle
 
+
 \begin{abstract}
-Mainly about entropy and a brief introduction of its related algorithms.
-Including logistic regression, variational auto encoder ...
+Starting with the origins of entropy and extend to some brief introduction of its related algorithms like log-likelihood, logistic regression, variational auto encoder(VAE),generative adversarial network(GAN),etc.
 \end{abstract}
 
 \tableofcontents
-\section{What is entropy?} 
-\subsection{Def of information}
-$$I(x)=-logP(x)$$
-\paragraph{•}
-Given x is some event, P(x) is probability which event x happens.
-\subsection{Why using '-logP(x)'?}
-\paragraph{•}
-The reason we pick -log as the transform function can be explained as follows:
+\section{What is information?} 
+\subsection{Defination of information}
+How to measure the uncentainty of certain event in a mathematics?
+\paragraph{Given} x is some event, P(x) is probability which event x happens. Intuitively, the information should have inverse proportion to the probability, which is 
+$$I(x)=\frac{1}{P(x)}$$
+We also want the information more stable,remove the division, so
+$$I(x)=log\frac{1}{P(x)}=-logP(x)$$
+\subsection{Property of information}
+As a result, the $-logP(x)$ has every properties we want:
 \begin{itemize}
 \item Lower probability, higher information
 \item Higher probability, lower information
 \item Multi-event happens, the probability is multiplied. the information is summed
 \end{itemize}
-\paragraph{Mathematics Explaination}
-\paragraph{•}
+\paragraph{Mathematics}
 As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
 $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
-\section{Average of Information(Entorpy)}
+\section{Entorpy (Expectation(sum) of Information)}
+\subsection{Shannon`s Information Theory}
+Claude Elwood Shannon(1916-2001).\\
+1937 MIT Master degree.\\
+1940 MIT Ph.D degree from MIT. \\
+1948 Published a landmark paper 'A mathematical Theory of Communication'.\\
+Entropy is defined as:
+$$H(x)=\sum_{i=1}^{n}P(x_{i})I(x_{i})=-\sum_{i=1}^{n}P(x_{i})logP(x_{i})$$
+\subsection{Property of entropy}
+The property of the entropy is quite simple
+\begin{itemize}
+\item Higher probability, the less information, the lower entropy
+\item Non-negative, every event has some information
+\item Cumulative, multile events happens, the information is the sum of them.
+\end{itemize}
+\section{Families of entropy}
+\subsection{Cross-Entropy}
+Suppose we don`t know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
+$$H(P,Q)=-\sum_{x}P(x)logQ(x)$$
+
+\paragraph{Estimation} There are many situations where P(x) is unknown. Given a test set N observed, which comes from a Monte Carlo sampling of the true distribution P(x). Cross entropy is calculated using :
+$$H(T,Q)=-\sum_{i=1}^{N}\frac{1}{N}logQ(x_{i})$$
+\subsubsection{Relation to log-likelihood}
+for the maximum likelihood estimation (MAE), we have:
+$$\prod_{i}q_{i}^{N_{p_{i}}}$$
+So log-likelihood,divided by N is :
+$$\frac{1}{N}log\prod_{i}q_{i}^{N_{p_{i}}}=\sum_{i}p_{i}logq_{i}=-H(p,q)$$
+So maximum the likelihood is the same as minimizing the cross entropy.
+\subsubsection{Cross-entropy loss in multi-class classification}
+In machine learning, cross-entropy loss is widely used now, it often defines as : 
+$$L=-ylog(y^{'})=H(y,y^{'})$$
+It describes the distance between the prediction and truth.
+\subsubsection{The simple and elegant relationship with softmax}
+This is worth talking here. As the softmax probability and cross-entropy loss is so so common, and they often work together.\\
+Softmax function:
+$$p_{i}=\frac{e^{a_{i}}}{\sum_{k=1}^{N}e^{a_{k}}}$$
+Derivative of softmax $\frac{\partial p_{i}}{\partial \alpha_{j}}$: \\
+\begin{equation}
+\frac{\partial p_{i}}{\partial \alpha_{j}}=\left\{
+\begin{aligned}
+p_{i}(1-p_{j}) & & i=j \\
+-p_{j}*p_{i}  && i\neq j \\
+\end{aligned}
+\right.
+\end{equation}
+The cross entropy loss:
+$$L=-\sum_{i}y_{i}logp_{i}$$
+Derivative of cross entropy loss:
+$$\frac{\partial L}{\partial o_{i}}=-\sum y_{k}\frac{1}{p_{k}}*\frac{\partial p_{i}}{\partial \alpha_{j}}$$
+From the dervative of softmax we derived earlier,
+$$\frac{\partial L}{\partial o_{i}}=-y_{i}(1-p_{i})-\sum_{k \neq i}y_{k}\frac{1}{p_{k}}(-p_{k}*p_{i})$$
+$$=p_{i}(y_{i}+\sum _{k \neq i}y_{k})-y_{i}=p_{i}-y_{i}$$
+This is why we often use softmax and cross entropy together, The gradient is quite simple to calculate. 
+\subsection{Kullback-Leibler divergence}
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
