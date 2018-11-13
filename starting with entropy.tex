@@ -33,7 +33,7 @@ As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
 $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
 \section{Entorpy (Expectation(sum) of Information)}
-\subsection{Shannon`s Information Theory}
+\subsection{Shannon's Information Theory}
 Claude Elwood Shannon(1916-2001).\\
 1937 MIT Master degree.\\
 1940 MIT Ph.D degree from MIT. \\
@@ -49,7 +49,7 @@ The property of the entropy is quite simple
 \end{itemize}
 \section{Families of Entropy}
 \subsection{Cross-Entropy}
-Suppose we don`t know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
+Suppose we don't know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
 $$H(P,Q)=-\sum_{x}P(x)logQ(x)$$
 
 \paragraph{Estimation} There are many situations where P(x) is unknown. Given a test set N observed, which comes from a Monte Carlo sampling of the true distribution P(x). Cross entropy is calculated using :
@@ -103,7 +103,7 @@ In applications, P typically represents the true distribution of data. Q represe
 \subsubsection{Property of KL}
 \begin{itemize}
 \item Non-negative \\
-As a result known as Gibbs`s inequality, with $D_{KL}(P \parallel Q)$ zero if and only if P = Q.
+As a result known as Gibbs's inequality, with $D_{KL}(P \parallel Q)$ zero if and only if P = Q.
 \item Asymmetric
 $$D_{KL}(P \parallel Q) \neq D_{KL}(Q \parallel P)$$
 we can define symmetrised divergence as:
@@ -117,7 +117,7 @@ $$posterior=\frac{likelihood * prior}{evidence}$$
 \subsection{Variational Inference}
 \paragraph{Question description} Suppose we have observations x, and hidden variables z, and some fixed parameters $\alpha$.What we want is the posterior distribution.
 $$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
-In many cases, the $\int_z p(z,x|\alpha)dz$ is intractable. we don`t know how to compute it especially in high dimensions.
+In many cases, the $\int_z p(z,x|\alpha)dz$ is intractable. we don't know how to compute it especially in high dimensions.
 \paragraph{Solution} The main idea behind variational methods is to pick a family of distributions over the latent variables with its own \textbf{variational parameters}.
 $$q(z_{1:m}|v)$$
 Then find $v$ to make $q$ close to the posterior.
@@ -126,14 +126,14 @@ As mentioned above, we can use KL for this variational inference:
 $$D_{KL}(q(z) \parallel p(z|x))=E_{q(z)} \left[ log \frac{q(z)}{p(z|x)} \right]$$
 Intuitively, According to this formula, there are three cases:
 \begin{itemize}
-\item If q is low, then we don`t care (Because of the expectation)
+\item If q is low, then we don't care (Because of the expectation)
 \item If q is high and p is high, good :)
 \item If q is high and p is low, bad :(
 \end{itemize}
 \subsection{Evidence Lower Bound}
 Actually we can not minimize KL divergence. But we can minimize another function which is equal to this. This is evidence lower bound (ELBO).
-\subsubsection{Jensen`s Inequality}
-Jensen`s inequality are widely used in EM algorithm. In convex function, we have :
+\subsubsection{Jensen's Inequality}
+Jensen's inequality are widely used in EM algorithm. In convex function, we have :
 $$f(tx_{1}+(1-t)x_{2})\leq tf(x_{1})+(1-t)f(x_{2}) $$ 
 In the context of probability theory, if X is a random variable, and $\varphi$ is a convex function, then:
 $$\varphi(E[x]) \leq E[\varphi(x)]$$
