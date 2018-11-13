@@ -129,7 +129,7 @@ Intuitively, According to this formula, there are three cases:
 \end{itemize}
 \subsection{Evidence lower bound}
 Actually we can not minimize KL divergence. But we can minimize another function which is equal to this. This is evidence lower bound (ELBO).
-\paragraph{Jensen`s inequality}
+\subsubsection{Jensen`s inequality}
 Jensen`s inequality are widely used in EM algorithm. In convex function, we have :
 $$f(tx_{1}+(1-t)x_{2})\leq tf(x_{1})+(1-t)f(x_{2}) $$ 
 In the context of probability theory, if X is a random variable, and $\varphi$ is a convex function, then:
@@ -147,7 +147,7 @@ logp(x) & =log \int_{z}p(x,z) \\
 \end{align*}
 Note the second term is the entropy\\
 But what does this have to do with the KL divergence? 
-\subsection{KL transformation}
+\subsubsection{KL transformation}
 As mentioned, we want $q(z)$ and $q(z|x)$ are close to each other:
 \begin{align*}
 KL(q(z)||q(z|x)) &= E_{q}\left[ log \frac{q(z)}{p(z|x)} \right] \\
