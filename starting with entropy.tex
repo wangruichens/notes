@@ -14,14 +14,14 @@ Starting with the origins of information, extend to entropy and its families. an
 \end{abstract}
 
 \tableofcontents
-\section{What is information?} 
-\subsection{Defination of information}
+\section{What is Information?} 
+\subsection{Defination of Information}
 How to measure the uncentainty of certain event in a mathematics?
 \paragraph{Given} x is some event, P(x) is probability which event x happens. Intuitively, the information should have inverse proportion to the probability, which is 
 $$I(x)=\frac{1}{P(x)}$$
 We also want the information more stable,remove the division, so
 $$I(x)=log\frac{1}{P(x)}=-logP(x)$$
-\subsection{Property of information}
+\subsection{Property of Information}
 As a result, the $-logP(x)$ has every properties we want:
 \begin{itemize}
 \item Lower probability, higher information
@@ -33,38 +33,39 @@ As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
 $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
 \section{Entorpy (Expectation(sum) of Information)}
-\subsection{Shannon`s information theory}
+\subsection{Shannon`s Information Theory}
 Claude Elwood Shannon(1916-2001).\\
 1937 MIT Master degree.\\
 1940 MIT Ph.D degree from MIT. \\
 1948 Published a landmark paper 'A mathematical Theory of Communication'.\\
 Entropy is defined as:
 $$H(x)=E[I(x)]=\sum_{i=1}^{n}P(x_{i})I(x_{i})=-\sum_{i=1}^{n}P(x_{i})logP(x_{i})$$
-\subsection{Property of entropy}
+\subsection{Property of Entropy}
 The property of the entropy is quite simple
 \begin{itemize}
 \item Higher probability, the less information, the lower entropy
 \item Non-negative, every event has some information
 \item Cumulative, multile events happens, the information is the sum of them.
 \end{itemize}
-\section{Families of entropy}
+\section{Families of Entropy}
 \subsection{Cross-Entropy}
 Suppose we don`t know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
 $$H(P,Q)=-\sum_{x}P(x)logQ(x)$$
 
 \paragraph{Estimation} There are many situations where P(x) is unknown. Given a test set N observed, which comes from a Monte Carlo sampling of the true distribution P(x). Cross entropy is calculated using :
 $$H(T,Q)=-\sum_{i=1}^{N}\frac{1}{N}logQ(x_{i})$$
-\subsubsection{Relation to log-likelihood}
+\subsubsection{Relation to Log-likelihood}
 for the maximum likelihood estimation (MAE), we have:
-$$\prod_{i}q_{i}^{N_{p_{i}}}$$
+$$\prod_{i}q_{i}^{N_{p_{i}}}$$ 
 So log-likelihood,divided by N is :
 $$\frac{1}{N}log\prod_{i}q_{i}^{N_{p_{i}}}=\sum_{i}p_{i}logq_{i}=-H(p,q)$$
 So maximum the likelihood is the same as minimizing the cross entropy.
-\subsubsection{Cross-entropy loss in classification}
+\subsubsection{Cross-entropy Loss in Classification}
 In machine learning, cross-entropy loss is widely used now, it often defines as : 
 $$L=-ylog(y^{'})=H(y,y^{'})$$
+
 It describes the distance between the prediction and truth.
-\subsubsection{The simple and elegant relationship with softmax}
+\subsubsection{The Simple and Elegant Relationship with Softmax}
 This is worth talking here. As the softmax probability and cross-entropy loss is so so common, and they often work together.\\
 Softmax function:
 $$p_{i}=\frac{e^{a_{i}}}{\sum_{k=1}^{N}e^{a_{k}}}$$
@@ -85,7 +86,7 @@ From the dervative of softmax we derived earlier,
 $$\frac{\partial L}{\partial o_{i}}=-y_{i}(1-p_{i})-\sum_{k \neq i}y_{k}\frac{1}{p_{k}}(-p_{k}*p_{i})$$
 $$=p_{i}(y_{i}+\sum _{k \neq i}y_{k})-y_{i}=p_{i}-y_{i}$$
 This is why we often use softmax and cross entropy together, The gradient is quite simple to calculate. 
-\subsection{Kullback-Leibler divergence}
+\subsection{Kullback-Leibler Divergence}
 KL divergence is also called relative entropy. It is a measure of how one probability distribution is different from a second.\\
 For discrete probability distirbutions P and Q defined on the same probability space, the KL divergence from Q to P (Q with respect to P) is defined as :
 $$D_{KL}(P \parallel Q)=-\sum_{i}P(i)log(\frac{Q(i)}{P(i)})$$
@@ -94,8 +95,10 @@ $$D_{KL}(P \parallel Q)=H(P,Q)-H(P)$$
 Which means the more entropy using Q gets with respect to original distirbution P.
 \subsubsection{Interpretations}
 In machine learning, $D_{KL}(P \parallel Q)$ is often called the information gain achieved if Q is used instead of P.
-\\
-Expressed in the language of Bayesian inference, $D_{KL}(P \parallel Q)$ is a measure of the information gained when one revises one's beliefs from the prior probability distribution Q to the posterior probability distribution P.\\
+
+
+Expressed in the language of Bayesian inference, $D_{KL}(P \parallel Q)$ is a measure of the information gained when one revises one's beliefs from the prior probability distribution Q to the posterior probability distribution P.
+
 In applications, P typically represents the true distribution of data. Q represents the model. Minimize $D_{KL}(P \parallel Q)$ is to find a Q that closest to P.  
 \subsubsection{Property of KL}
 \begin{itemize}
@@ -111,14 +114,14 @@ Generative models like VAE, we may need a new section to go through this.I will 
 $$posterior=\frac{likelihood * prior}{evidence}$$
 
 \section{Variational Bayesian Inference}
-\subsection{Variational inference}
+\subsection{Variational Inference}
 \paragraph{Question description} Suppose we have observations x, and hidden variables z, and some fixed parameters $\alpha$.What we want is the posterior distribution.
 $$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
 In many cases, the $\int_z p(z,x|\alpha)dz$ is intractable. we don`t know how to compute it especially in high dimensions.
 \paragraph{Solution} The main idea behind variational methods is to pick a family of distributions over the latent variables with its own \textbf{variational parameters}.
 $$q(z_{1:m}|v)$$
 Then find $v$ to make $q$ close to the posterior.
-\subsection{KL divergence measure}
+\subsection{KL Divergence Measure}
 As mentioned above, we can use KL for this variational inference:
 $$D_{KL}(q(z) \parallel p(z|x))=E_{q(z)} \left[ log \frac{q(z)}{p(z|x)} \right]$$
 Intuitively, According to this formula, there are three cases:
@@ -127,9 +130,9 @@ Intuitively, According to this formula, there are three cases:
 \item If q is high and p is high, good :)
 \item If q is high and p is low, bad :(
 \end{itemize}
-\subsection{Evidence lower bound}
+\subsection{Evidence Lower Bound}
 Actually we can not minimize KL divergence. But we can minimize another function which is equal to this. This is evidence lower bound (ELBO).
-\subsubsection{Jensen`s inequality}
+\subsubsection{Jensen`s Inequality}
 Jensen`s inequality are widely used in EM algorithm. In convex function, we have :
 $$f(tx_{1}+(1-t)x_{2})\leq tf(x_{1})+(1-t)f(x_{2}) $$ 
 In the context of probability theory, if X is a random variable, and $\varphi$ is a convex function, then:
@@ -147,31 +150,42 @@ logp(x) & =log \int_{z}p(x,z) \\
 \end{align*}
 Note the second term is the entropy\\
 But what does this have to do with the KL divergence? 
-\subsubsection{KL transformation}
+\subsubsection{KL Transformation}
 As mentioned, we want $q(z)$ and $q(z|x)$ are close to each other:
 \begin{align*}
-KL(q(z)||q(z|x)) &= E_{q}\left[ log \frac{q(z)}{p(z|x)} \right] \\
+KL(q(z)||p(z|x)) &= E_{q}\left[ log \frac{q(z)}{p(z|x)} \right] \\
 &=E_{q}[logq(z)]-E_{q}[logp(z|x)]
 \end{align*}
 As we know,
 $$p(z|x)=\frac{p(z,x)}{p(x)}$$
 so 
 \begin{align*}
-KL(q(z)||q(z|x)) &= E_{q}[logq(z)]-E_{q}[log(z,x)]+E_{q}[logp(x)] \\
-&= -(E_{q}[logq(z,x)]-E_{q}[logq(z)])+logp(x)
+KL(q(z)||p(z|x)) &= E_{q}[logq(z)]-E_{q}[logp(z,x)]+E_{q}[logp(x)] \\
+&= -(E_{q}[logp(z,x)]-E_{q}[logq(z)])+logp(x)
 \end{align*}
 The first term is ELBO we just met.\\
 The formula can also be written as :
-$$logp(x)=KL(q(z)||q(z|x))+(E_{q}[logq(z,x)]-E_{q}[logq(z)])$$
-As I mentioned before, For two different distributions, KL divergence is always larger than zero. and $p(x)$ is the observation evidence, which is fixed. So minimizing the KL divergence is the same as maximizing the ELBO. This is also called as the variational lower bound.
+$$logp(x)=KL(q(z)||p(z|x))+(E_{q}[logp(z,x)]-E_{q}[logq(z)])$$
+As I mentioned before, For two different distributions, KL divergence is always non-negative. and $p(x)$ is the observation evidence, which is fixed. So minimizing the KL divergence is the same as maximizing the ELBO. This is also called as the variational lower bound.
 
-\subsection{Mean field variational inference}
+\subsection{Mean Field Theory}
 Mean field theory is also called \textbf{self-consistent field theory}. It studies the behavior of large and complex stochastic models by studying a simpler model.Such models consider a large number of small individual components that interact with each other.
 
 The effect of all the other individuals on any given individual is approximated by a single averaged effect, thus reducing a many-body problem to a one-body problem.
 
 We assume each variable is independent.
 $$q(z_{1},...,z_{m})= \prod _{i=1}^{m}q(z_{i})$$
+Also we have the chain rule 
+$$p(z_{1:m},x_{1:n})=p(x_{1:n}) \prod_{j=1}^{m}p(z_{j}|z_{1:(j-1)},x_{1:n})$$
+Note that the order of j is irrelevant.Based on this theory, we can rewrite the lower bound as:
+\begin{align*}
+\mathcal{L} &= \sum_{j=1}^{m} E[logp(z_{j}|z_{1:(j-1)},x_{1:n})]-E_{j}[logq(z_{j})] 
+\end{align*}
+
+
+
+
+
 \end{document}
 
 
