@@ -33,13 +33,13 @@ As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
 $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
 \section{Entorpy (Expectation(sum) of Information)}
-\subsection{Shannon`s Information Theory}
+\subsection{Shannon`s information theory}
 Claude Elwood Shannon(1916-2001).\\
 1937 MIT Master degree.\\
 1940 MIT Ph.D degree from MIT. \\
 1948 Published a landmark paper 'A mathematical Theory of Communication'.\\
 Entropy is defined as:
-$$H(x)=\sum_{i=1}^{n}P(x_{i})I(x_{i})=-\sum_{i=1}^{n}P(x_{i})logP(x_{i})$$
+$$H(x)=E[I(x)]=\sum_{i=1}^{n}P(x_{i})I(x_{i})=-\sum_{i=1}^{n}P(x_{i})logP(x_{i})$$
 \subsection{Property of entropy}
 The property of the entropy is quite simple
 \begin{itemize}
@@ -106,10 +106,10 @@ $$D_{KL}(P \parallel Q) \neq D_{KL}(Q \parallel P)$$
 we can define symmetrised divergence as:
 $$\frac{D_{KL}(P \parallel Q) + D_{KL}(Q \parallel P)}{2}$$
 \end{itemize}
-
 \subsubsection{Applications}
 Generative models like VAE, we may need a new section to go through this.I will go into details later. Here I just put a bayes equation here :). 
 $$posterior=\frac{likelihood * prior}{evidence}$$
+
 \section{Variational Bayesian Inference}
 \subsection{Variational inference}
 \paragraph{Question description} Suppose we have observations x, and hidden variables z, and some fixed parameters $\alpha$.What we want is the posterior distribution.
@@ -120,7 +120,58 @@ $$q(z_{1:m}|v)$$
 Then find $v$ to make $q$ close to the posterior.
 \subsection{KL divergence measure}
 As mentioned above, we can use KL for this variational inference:
-$$D_{KL}(q \parallel p)=E_{q} \left[ log \frac{q(Z)}{p(Z|x)} \right]$$
+$$D_{KL}(q(z) \parallel p(z|x))=E_{q(z)} \left[ log \frac{q(z)}{p(z|x)} \right]$$
+Intuitively, According to this formula, there are three cases:
+\begin{itemize}
+\item If q is low, then we don`t care (Because of the expectation)
+\item If q is high and p is high, good :)
+\item If q is high and p is low, bad :(
+\end{itemize}
+\subsection{Evidence lower bound}
+Actually we can not minimize KL divergence. But we can minimize another function which is equal to this. This is evidence lower bound (ELBO).
+\paragraph{Jensen`s inequality}
+Jensen`s inequality are widely used in EM algorithm. In convex function, we have :
+$$f(tx_{1}+(1-t)x_{2})\leq tf(x_{1})+(1-t)f(x_{2}) $$ 
+In the context of probability theory, if X is a random variable, and $\varphi$ is a convex function, then:
+$$\varphi(E[x]) \leq E[\varphi(x)]$$
+\paragraph{Back} to the problem, we have observations $x^{1},x^{2},...,x^{n}$, we want $p(x^{i})$ get the max probability. Using MLE on it, which is the sum of the log-likelihood,
+$$logp_{\theta}(x^{1},x^{2},...,x^{n})=\sum_{i=1}^{N}logp_{\theta} (x^{i})$$
+and
+
+\begin{align*}
+logp(x) & =log \int_{z}p(x,z) \\
+ &= log \int_{z}p(x,z)\frac{q(z)}{q(z)} \\
+ &= log \left( E_{q} \left[ \frac{p(x,z)}{q(z)} \right] \right) \\
+ &\geq E_{q} \left[ log \frac{p(x,z)}{q(z)} \right] \\
+ &\geq E_{q}[logp(x,z)]-E_{q}[logq(z)]
+\end{align*}
+Note the second term is the entropy\\
+But what does this have to do with the KL divergence? 
+\subsection{KL transformation}
+As mentioned, we want $q(z)$ and $q(z|x)$ are close to each other:
+\begin{align*}
+KL(q(z)||q(z|x)) &= E_{q}\left[ log \frac{q(z)}{p(z|x)} \right] \\
+&=E_{q}[logq(z)]-E_{q}[logp(z|x)]
+\end{align*}
+As we know,
+$$p(z|x)=\frac{p(z,x)}{p(x)}$$
+so 
+\begin{align*}
+KL(q(z)||q(z|x)) &= E_{q}[logq(z)]-E_{q}[log(z,x)]+E_{q}[logp(x)] \\
+&= -(E_{q}[logq(z,x)]-E_{q}[logq(z)])+logp(x)
+\end{align*}
+The first term is ELBO we just met.\\
+The formula can also be written as :
+$$logp(x)=KL(q(z)||q(z|x))+(E_{q}[logq(z,x)]-E_{q}[logq(z)])$$
+As I mentioned before, For two different distributions, KL divergence is always larger than zero. and $p(x)$ is the observation evidence, which is fixed. So minimizing the KL divergence is the same as maximizing the ELBO. This is also called as the variational lower bound.
+
+\subsection{Mean field variational inference}
+Mean field theory is also called \textbf{self-consistent field theory}. It studies the behavior of large and complex stochastic models by studying a simpler model.Such models consider a large number of small individual components that interact with each other.
+
+The effect of all the other individuals on any given individual is approximated by a single averaged effect, thus reducing a many-body problem to a one-body problem.
+
+We assume each variable is independent.
+$$q(z_{1},...,z_{m})= \prod _{i=1}^{m}q(z_{i})$$
 \end{document}
 
 
