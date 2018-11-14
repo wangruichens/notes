@@ -10,7 +10,7 @@
 
 
 \begin{abstract}
-Starting with the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms. Like log-likelihood, logistic regression, variational auto encoder(VAE),generative adversarial network(GAN),etc.
+Starting with the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms. Like log-likelihood, logistic regression,variational bayesian inference, variational auto encoder(VAE),generative adversarial network(GAN),etc.
 \end{abstract}
 
 \tableofcontents
@@ -71,6 +71,7 @@ Softmax function:
 $$p_{i}=\frac{e^{a_{i}}}{\sum_{k=1}^{N}e^{a_{k}}}$$
 Derivative of softmax $\frac{\partial p_{i}}{\partial \alpha_{j}}$: \\
 \begin{equation}
+\nonumber
 \frac{\partial p_{i}}{\partial \alpha_{j}}=\left\{
 \begin{aligned}
 p_{i}(1-p_{j}) & & i=j \\
@@ -166,27 +167,50 @@ KL(q(z)||p(z|x)) &= E_{q}[logq(z)]-E_{q}[logp(z,x)]+E_{q}[logp(x)] \\
 The first term is ELBO we just met.\\
 The formula can also be written as :
 $$logp(x)=KL(q(z)||p(z|x))+(E_{q}[logp(z,x)]-E_{q}[logq(z)])$$
+
 As I mentioned before, For two different distributions, KL divergence is always non-negative. and $p(x)$ is the observation evidence, which is fixed. So minimizing the KL divergence is the same as maximizing the ELBO. This is also called as the variational lower bound.
 
 \subsection{Mean Field Theory}
 Mean field theory is also called \textbf{self-consistent field theory}. It studies the behavior of large and complex stochastic models by studying a simpler model.Such models consider a large number of small individual components that interact with each other.
 
 The effect of all the other individuals on any given individual is approximated by a single averaged effect, thus reducing a many-body problem to a one-body problem.
-
-We assume each variable is independent.
-$$q(z_{1},...,z_{m})= \prod _{i=1}^{m}q(z_{i})$$
+\subsubsection{Mean Field Approximation}
+We assume each variable is independent.Using this theory, we can write:
+$$q(z_{1:m})= \prod _{i=1}^{m}q(z_{i})$$
+$$E_{q}[logq(z_{1:m})]=\sum_{j=1}^{m}E_{q_{j}}[logq(z_{j})]$$
 Also we have the chain rule 
 $$p(z_{1:m},x_{1:n})=p(x_{1:n}) \prod_{j=1}^{m}p(z_{j}|z_{1:(j-1)},x_{1:n})$$
+\subsubsection{Mean Field Method}
 Note that the order of j is irrelevant.Based on this theory, we can rewrite the lower bound as:
 \begin{align*}
-\mathcal{L} &= \sum_{j=1}^{m} E[logp(z_{j}|z_{1:(j-1)},x_{1:n})]-E_{j}[logq(z_{j})] 
+\mathcal{L} &= \sum_{j=1}^{m} E_{q}[logp(z_{j}|z_{1:(j-1)},x_{1:n})]-E_{q_{j}}[logq(z_{j})] 
 \end{align*}
-Consider variable $z_{k}$:
+Consider the variable $z_{j}$ comes last: 
+$$\mathcal{L} =logp(x_{1:n})+E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})]$$
+And we can remove the first term because it's irrevalte to $q(z_{j})$,the $\mathcal{L}$ can be written as
 
+\begin{align*}
+argmax_{q_{j}} \mathcal{L} &=E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})] \\
+&= \int q(z_{j})E_{-j}[logp(z_{j}|z_{-j},x)]dz_{j}-\int q(z_{j})logq(z_{j})dz_{j}
+\end{align*}
 
+\paragraph{Derivative of ELBO}Here we can use Lagrange multipliers. Let's treat $q(z_{j})$ as $f(x)$.
+For simplicity, I convert the formula into this:
+$$\frac{d \mathcal{L}}{dq(z_{j})}=\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{d[f(x)]}=0$$
+this is equal to:
+$$\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{dx} \times \frac{dx}{d[f(x)]}=0$$
+$$ [ K f(x)-f(x)logf(x)] \times \frac{1}{f'(x)}=0$$
+which is :
+$$Kf'(x)-[f'(x)logf(x)+f(x) \frac{1}{f(x)}f'(x)]  =0$$
+and:
+$$K-logf(x)-1=0$$
+which means the argmax of ELBO can be find at: 
+$$E_{-j}[logp(z_{j}|z_{-j},x)]-logq(z_{j})-1=0$$
+$$log \frac{ e^{E_{-j}[logp(z_{j}|z_{-j},x)]}}{q(z_{j})}= log_{e}e $$
+$e$ can be any other constant. 
 
-
-
+This lead to the conclusion:
+$$q^{*}(z_{j}) \propto $$
 \end{document}
 
 
