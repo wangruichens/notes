@@ -3,14 +3,14 @@
 \usepackage{indentfirst}
 \usepackage{amsmath}
 \author{Ruichen Wang}
-\title{Starting from Entropy}
+\title{Starting from Information}
 
 \begin{document}
 \maketitle
 
 
 \begin{abstract}
-Starting with the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms. Like log-likelihood, logistic regression,variational bayesian inference, variational auto encoder(VAE),generative adversarial network(GAN),etc.
+Starting with the introducing the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms. Like log-likelihood, logistic regression,variational bayesian inference, variational auto encoder(VAE),generative adversarial network(GAN),etc.
 \end{abstract}
 
 \tableofcontents
@@ -65,8 +65,8 @@ In machine learning, cross-entropy loss is widely used now, it often defines as 
 $$L=-ylog(y^{'})=H(y,y^{'})$$
 
 It describes the distance between the prediction and truth.
-\subsubsection{The Simple and Elegant Relationship with Softmax}
-This is worth talking here. As the softmax probability and cross-entropy loss is so so common, and they often work together.\\
+\subsubsection{Simple and Elegant Relationship with Softmax}
+As the softmax probability and cross-entropy loss is so so common, and they often work together. But why? Because the simplicity of the derivative. \\
 Softmax function:
 $$p_{i}=\frac{e^{a_{i}}}{\sum_{k=1}^{N}e^{a_{k}}}$$
 Derivative of softmax $\frac{\partial p_{i}}{\partial \alpha_{j}}$: \\
@@ -82,7 +82,7 @@ p_{i}(1-p_{j}) & & i=j \\
 The cross entropy loss:
 $$L=-\sum_{i}y_{i}logp_{i}$$
 Derivative of cross entropy loss:
-$$\frac{\partial L}{\partial o_{i}}=-\sum y_{k}\frac{1}{p_{k}}*\frac{\partial p_{i}}{\partial \alpha_{j}}$$
+$$\frac{\partial L}{\partial o_{i}}=-\sum y_{k}\frac{1}{p_{k}}*\frac{\partial p_{k}}{\partial o_{i}}$$
 From the dervative of softmax we derived earlier,
 $$\frac{\partial L}{\partial o_{i}}=-y_{i}(1-p_{i})-\sum_{k \neq i}y_{k}\frac{1}{p_{k}}(-p_{k}*p_{i})$$
 $$=p_{i}(y_{i}+\sum _{k \neq i}y_{k})-y_{i}=p_{i}-y_{i}$$
@@ -91,9 +91,9 @@ This is why we often use softmax and cross entropy together, The gradient is qui
 KL divergence is also called relative entropy. It is a measure of how one probability distribution is different from a second.\\
 For discrete probability distirbutions P and Q defined on the same probability space, the KL divergence from Q to P (Q with respect to P) is defined as :
 $$D_{KL}(P \parallel Q)=-\sum_{i}P(i)log(\frac{Q(i)}{P(i)})$$
-Actually, this can also be written as: 
+This can also be written as the cross entropy minius original entropy: 
 $$D_{KL}(P \parallel Q)=H(P,Q)-H(P)$$
-Which means the more entropy using Q gets with respect to original distirbution P.
+Which means the more entropy using Q generates with respect to original distirbution P.
 \subsubsection{Interpretations}
 In machine learning, $D_{KL}(P \parallel Q)$ is often called the information gain achieved if Q is used instead of P.
 
@@ -111,11 +111,22 @@ we can define symmetrised divergence as:
 $$\frac{D_{KL}(P \parallel Q) + D_{KL}(Q \parallel P)}{2}$$
 \end{itemize}
 \subsubsection{Applications}
-Generative models like VAE, we may need a new section to go through this.I will go into details later. Here I just put a bayes equation here :). 
+Generative models like VAE, we may need a new section to go through this.I will go into details later. Here I just put a bayesian equation here :). 
 $$posterior=\frac{likelihood * prior}{evidence}$$
+$$p(z|x)=\frac{p(x|z)p(z)}{p(x)}$$
 
 \section{Variational Bayesian Inference}
 \subsection{Variational Inference}
+The idea behind variational inference is to first posit a family of densities and then
+to find the member of that family which is close to the target. Closeness is measured
+by Kullback-Leibler divergence.
+
+Variational inference is widely used to approximate posterior densities for Bayesian models,an alternative strategy to Markov chain Monte Carlo (MCMC) sampling. Compared to MCMC, MCMC algorithms sample a Markov chain, variational algorithms solve an
+optimization problem. variational inference tends to be faster and easier to scale to large data.
+
+Variational inference has a close relationship with EM algorithm. You can view VAE, GAN as a certain form of variational inference. Variational inference doesn't have the global optimal point, that why VAE and GAN are very hard to train or converge.
+\paragraph{*Tips} Compare MCMC with Metropolis-Hasting (MH). MH larger the acceptance ratio $\alpha$. When extend to high dimensions, It is called Gibbs sampling. Actually, they are based on the same idea - bayesian stationary distribution. 
+
 \paragraph{Question description} Suppose we have observations x, and hidden variables z, and some fixed parameters $\alpha$.What we want is the posterior distribution.
 $$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
 In many cases, the $\int_z p(z,x|\alpha)dz$ is intractable. we don't know how to compute it especially in high dimensions.
@@ -169,6 +180,15 @@ The formula can also be written as :
 $$logp(x)=KL(q(z)||p(z|x))+(E_{q}[logp(z,x)]-E_{q}[logq(z)])$$
 
 As I mentioned before, For two different distributions, KL divergence is always non-negative. and $p(x)$ is the observation evidence, which is fixed. So minimizing the KL divergence is the same as maximizing the ELBO. This is also called as the variational lower bound.
+\subsubsection{Relationship with EM}
+EM algorithm is also known as a famous method to find the distirbutions of latent varibales. Unlike variational inference we are going to talk about, EM algorithm use the fact that ELBO is equal to the $p(x)$ when $q(z)=p(z|x)$. EM \textbf{alternates} between computing $p(z|x)$ (E step), and optimizing it with respect to the model parameters(M step). The biggest difference is EM assume $p(z|x)$ is computable and fix the parameter, use it, while variational inference use bayesian setting and apply to the models we can not compute. 
+
+* EM is out the scope of this article, I don't want to go into too detail about it. Actually the formula below explains pretty clear.\\
+E-step:
+$$q(z):=p(z|x;\theta)$$
+M-step:
+$$\theta:=\mathop{\arg\max}_{\theta} -KL(q(z)||p(z|x;\theta))$$
+
 
 \subsection{Mean Field Theory}
 Mean field theory is also called \textbf{self-consistent field theory}. It studies the behavior of large and complex stochastic models by studying a simpler model.Such models consider a large number of small individual components that interact with each other.
@@ -194,11 +214,12 @@ argmax_{q_{j}} \mathcal{L} &=E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})] 
 &= \int q(z_{j})E_{-j}[logp(z_{j}|z_{-j},x)]dz_{j}-\int q(z_{j})logq(z_{j})dz_{j}
 \end{align*}
 
-\paragraph{Derivative of ELBO}Here we can use Lagrange multipliers. Let's treat $q(z_{j})$ as $f(x)$.
+\subsection{Coordinate Ascent Variational Inference}
+From here we can use Lagrange multipliers. Let's treat $q(z_{j})$ as $f(x)$.
 For simplicity, I convert the formula into this:
 $$\frac{d \mathcal{L}}{dq(z_{j})}=\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{d[f(x)]}=0$$
 this is equal to:
-$$\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{dx} \times \frac{dx}{d[f(x)]}=0$$
+$$\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{dx} \times \frac{•}{•}{dx}{d[f(x)]}=0$$
 $$ [ K f(x)-f(x)logf(x)] \times \frac{1}{f'(x)}=0$$
 which is :
 $$Kf'(x)-[f'(x)logf(x)+f(x) \frac{1}{f(x)}f'(x)]  =0$$
@@ -207,10 +228,22 @@ $$K-logf(x)-1=0$$
 which means the argmax of ELBO can be find at: 
 $$E_{-j}[logp(z_{j}|z_{-j},x)]-logq(z_{j})-1=0$$
 $$log \frac{ e^{E_{-j}[logp(z_{j}|z_{-j},x)]}}{q(z_{j})}= log_{e}e $$
-$e$ can be any other constant. 
-
+Or you can simply view it as $y-x-1=0$.
 This lead to the conclusion:
-$$q^{*}(z_{j}) \propto $$
+$$q^{*}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j}|z_{-j},x)] \right\}$$
+since $p(z_{j}|z_{-j},x)=\frac{p(z_{j},z_{-j},x)}{p(z_{-j},x)} $, and $p(z_{-j})$ does not depend on $z_{j}$ we can equivalenty write:
+$$q^{*}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j},z_{-j},x)] \right\}$$
+Note that there is generally no guarantee of convexity of ELBO, this coordinate ascent procedure converges to a local maximum.
+
+Finally, We can find this method is closely related to Gibbs sampling. Actually Gibbs sampling is a very classical approximate inference method. In variational inference,
+we take the expected log and set each variable’s variational factor iteratively.
+
+
+
+
+
+
+
 \end{document}
 
 
