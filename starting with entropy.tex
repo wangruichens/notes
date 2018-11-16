@@ -2,17 +2,17 @@
 \usepackage{graphics}
 \usepackage{indentfirst}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{setspace}
 \author{Ruichen Wang}
 \title{Starting from Information}
-
 \begin{document}
 \maketitle
-
-
 \begin{abstract}
-Starting with the introducing the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms. Like log-likelihood, logistic regression,variational bayesian inference, variational auto encoder(VAE),generative adversarial network(GAN),etc.
+Starting with the introducing the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms, like log-likelihood, softmax classification. Then we will talk about one basic algorithm solving intractable problems, which is called variational bayesian inference, and it's  closely related algorithms like latent dirichlet allocation(LDA), variational auto encoder(VAE), generative adversarial network(GAN),etc.
 \end{abstract}
-
 \tableofcontents
 \section{What is Information?} 
 \subsection{Defination of Information}
@@ -34,6 +34,7 @@ $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
 \section{Entorpy (Expectation(sum) of Information)}
 \subsection{Shannon's Information Theory}
+\noindent
 Claude Elwood Shannon(1916-2001).\\
 1937 MIT Master degree.\\
 1940 MIT Ph.D degree from MIT. \\
@@ -233,17 +234,33 @@ This lead to the conclusion:
 $$q^{*}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j}|z_{-j},x)] \right\}$$
 since $p(z_{j}|z_{-j},x)=\frac{p(z_{j},z_{-j},x)}{p(z_{-j},x)} $, and $p(z_{-j})$ does not depend on $z_{j}$ we can equivalenty write:
 $$q^{*}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j},z_{-j},x)] \right\}$$
+
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}}
+\renewcommand{\algorithmicensure}{ \textbf{Output:}}
+
+\begin{algorithm}
+\caption{Coordinate Ascent Variational Inference}
+\begin{algorithmic}
+\REQUIRE A model $p(x,z)$, a dataset x
+\ENSURE A variational density $q(z)=\prod_{j=1}^{m}q_{j}(z_{j})$
+\STATE {\textbf{init:}  variational factors $q_{j}(z_{j})$} 
+\WHILE {\emph{ELBO has not converged}}
+\FORALL {$j \in \left\{1,...,m  \right\}$ }
+\STATE set $q_{j}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j},z_{-j},x)] \right\}$ 
+\ENDFOR
+\STATE compute $ELBO=E_{q}[logp(z,x)]-E_{q}[logq(z)]$ 
+\ENDWHILE 
+\end{algorithmic}
+\end{algorithm}
+
 Note that there is generally no guarantee of convexity of ELBO, this coordinate ascent procedure converges to a local maximum.
 
 Finally, We can find this method is closely related to Gibbs sampling. Actually Gibbs sampling is a very classical approximate inference method. In variational inference,
 we take the expected log and set each variable’s variational factor iteratively.
 
-
-
-
-
-
-
+\section{Latent Dirichlet Allocation} 
+\subsection{Introduction}
+LDA is a well known algorithm for topic modeling. You can view LDA as a bayesian version of PLSA (probabilistic latent semantic analysis). 
 \end{document}
 
 
