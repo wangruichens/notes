@@ -4,22 +4,25 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage{bm}
 \usepackage{setspace}
-\author{Ruichen Wang}
+\author{Ruichen Wang \\
+wangrc@2345.com}
 \title{Starting from Information}
 \begin{document}
 \maketitle
 \begin{abstract}
 Starting with the introducing the origins of information, extend to entropy and its families. and some introduction and explanation of entropy related algorithms, like log-likelihood, softmax classification. Then we will talk about one basic algorithm solving intractable problems, which is called variational bayesian inference, and it's  closely related algorithms like latent dirichlet allocation(LDA), variational auto encoder(VAE), generative adversarial network(GAN),etc.
 \end{abstract}
+
 \tableofcontents
 \section{What is Information?} 
 \subsection{Defination of Information}
-How to measure the uncentainty of certain event in a mathematics?
-\paragraph{Given} x is some event, P(x) is probability which event x happens. Intuitively, the information should have inverse proportion to the probability, which is 
+How to measure the information of certain event in a mathematics?
+
+Given x is certain event, P(x) is probability which event x happens. Intuitively, the information should have inverse proportion to the probability, higher probability should have lower information, which is 
 $$I(x)=\frac{1}{P(x)}$$
-We also want the information more stable,remove the division, so
+As $p(x) \in [0,1] $, we also want the information more stable, and remove the division for calculation convience, so we can re-define it as:
 $$I(x)=log\frac{1}{P(x)}=-logP(x)$$
 \subsection{Property of Information}
 As a result, the $-logP(x)$ has every properties we want:
@@ -28,18 +31,17 @@ As a result, the $-logP(x)$ has every properties we want:
 \item Higher probability, lower information
 \item Multi-event happens, the probability is multiplied. the information is summed
 \end{itemize}
-\paragraph{Mathematics}
-As we know, $P(x) \in [0,1]$, and larger P(x) should have smaller information.
 $$P(x_{1},x_{2})=P(x_{1})*P(x_{2})$$
 $$logP(x_{1},x_{2})=logP(x_{1})+logP(x_{2})$$
-\section{Entorpy (Expectation(sum) of Information)}
+$P(x) \in [0,1]$, and larger P(x) has smaller information.
+\section{Entorpy (Expectation of Information)}
 \subsection{Shannon's Information Theory}
-\noindent
 Claude Elwood Shannon(1916-2001).\\
+\noindent
 1937 MIT Master degree.\\
 1940 MIT Ph.D degree from MIT. \\
 1948 Published a landmark paper 'A mathematical Theory of Communication'.\\
-Entropy is defined as:
+Entropy is defined as the expectation of information certain event carries:
 $$H(x)=E[I(x)]=\sum_{i=1}^{n}P(x_{i})I(x_{i})=-\sum_{i=1}^{n}P(x_{i})logP(x_{i})$$
 \subsection{Property of Entropy}
 The property of the entropy is quite simple
@@ -50,23 +52,23 @@ The property of the entropy is quite simple
 \end{itemize}
 \section{Families of Entropy}
 \subsection{Cross-Entropy}
-Suppose we don't know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
+It is often the case that we don't know P(x) yet, so we make an 'artificial' probability distribution Q(x). How can we measure the cost as we using Q(x) to approximate P(x)? We define corss entropy as:
 $$H(P,Q)=-\sum_{x}P(x)logQ(x)$$
 
-\paragraph{Estimation} There are many situations where P(x) is unknown. Given a test set N observed, which comes from a Monte Carlo sampling of the true distribution P(x). Cross entropy is calculated using :
-$$H(T,Q)=-\sum_{i=1}^{N}\frac{1}{N}logQ(x_{i})$$
+\paragraph{In practice} Given a test set N observed, which comes from a Monte Carlo sampling of the true distribution P(x). Cross entropy is calculated using :
+$$H(T,Q)=-\frac{1}{N}\sum_{i=1}^{N}logQ(x_{i})$$
 \subsubsection{Relation to Log-likelihood}
-for the maximum likelihood estimation (MAE), we have:
-$$\prod_{i}q_{i}^{N_{p_{i}}}$$ 
+for the maximum likelihood estimation (MAE), we want:
+$$ \mathop{\arg\max} \prod_{i}q_{i}^{N_{p_{i}}}$$ 
 So log-likelihood,divided by N is :
 $$\frac{1}{N}log\prod_{i}q_{i}^{N_{p_{i}}}=\sum_{i}p_{i}logq_{i}=-H(p,q)$$
 So maximum the likelihood is the same as minimizing the cross entropy.
 \subsubsection{Cross-entropy Loss in Classification}
-In machine learning, cross-entropy loss is widely used now, it often defines as : 
+In machine learning, cross-entropy loss is widely used, it often defines as : 
 $$L=-ylog(y^{'})=H(y,y^{'})$$
 
 It describes the distance between the prediction and truth.
-\subsubsection{Simple and Elegant Relationship with Softmax}
+\subsubsection{Relationship with Softmax}
 As the softmax probability and cross-entropy loss is so so common, and they often work together. But why? Because the simplicity of the derivative. \\
 Softmax function:
 $$p_{i}=\frac{e^{a_{i}}}{\sum_{k=1}^{N}e^{a_{k}}}$$
@@ -87,21 +89,23 @@ $$\frac{\partial L}{\partial o_{i}}=-\sum y_{k}\frac{1}{p_{k}}*\frac{\partial p_
 From the dervative of softmax we derived earlier,
 $$\frac{\partial L}{\partial o_{i}}=-y_{i}(1-p_{i})-\sum_{k \neq i}y_{k}\frac{1}{p_{k}}(-p_{k}*p_{i})$$
 $$=p_{i}(y_{i}+\sum _{k \neq i}y_{k})-y_{i}=p_{i}-y_{i}$$
-This is why we often use softmax and cross entropy together, The gradient is quite simple to calculate. 
+This is why we often use softmax and cross entropy together, The gradient is quite simple and elegant to calculate. 
 \subsection{Kullback-Leibler Divergence}
 KL divergence is also called relative entropy. It is a measure of how one probability distribution is different from a second.\\
 For discrete probability distirbutions P and Q defined on the same probability space, the KL divergence from Q to P (Q with respect to P) is defined as :
-$$D_{KL}(P \parallel Q)=-\sum_{i}P(i)log(\frac{Q(i)}{P(i)})$$
-This can also be written as the cross entropy minius original entropy: 
-$$D_{KL}(P \parallel Q)=H(P,Q)-H(P)$$
+
+\begin{align*}
+D_{KL}(P \parallel Q)=H(P,Q)-H(P) \\
+=-\sum_{i}P(i)log(\frac{Q(i)}{P(i)})
+\end{align*}
 Which means the more entropy using Q generates with respect to original distirbution P.
+
 \subsubsection{Interpretations}
 In machine learning, $D_{KL}(P \parallel Q)$ is often called the information gain achieved if Q is used instead of P.
 
-
 Expressed in the language of Bayesian inference, $D_{KL}(P \parallel Q)$ is a measure of the information gained when one revises one's beliefs from the prior probability distribution Q to the posterior probability distribution P.
 
-In applications, P typically represents the true distribution of data. Q represents the model. Minimize $D_{KL}(P \parallel Q)$ is to find a Q that closest to P.  
+In applications, P typically represents the true distribution of data. Q represents the model. Minimize $D_{KL}(P \parallel Q)$ can be a good solution to find a Q that closest to P.  
 \subsubsection{Property of KL}
 \begin{itemize}
 \item Non-negative \\
@@ -112,21 +116,18 @@ we can define symmetrised divergence as:
 $$\frac{D_{KL}(P \parallel Q) + D_{KL}(Q \parallel P)}{2}$$
 \end{itemize}
 \subsubsection{Applications}
-Generative models like VAE, we may need a new section to go through this.I will go into details later. Here I just put a bayesian equation here :). 
+It is widely used in generative models. You can find it in NLP, computer vision, robotics, biology. We will use this in next section. Here I just put the bayesian equation here. :)
 $$posterior=\frac{likelihood * prior}{evidence}$$
 $$p(z|x)=\frac{p(x|z)p(z)}{p(x)}$$
 
 \section{Variational Bayesian Inference}
 \subsection{Variational Inference}
-The idea behind variational inference is to first posit a family of densities and then
-to find the member of that family which is close to the target. Closeness is measured
-by Kullback-Leibler divergence.
+The idea behind variational inference is to first posit a family of densities and then to find the member of that family which is close to the target. Closeness is measured by \textbf{Kullback-Leibler divergence} .
 
-Variational inference is widely used to approximate posterior densities for Bayesian models,an alternative strategy to Markov chain Monte Carlo (MCMC) sampling. Compared to MCMC, MCMC algorithms sample a Markov chain, variational algorithms solve an
-optimization problem. variational inference tends to be faster and easier to scale to large data.
+Variational inference is widely used to approximate posterior densities for Bayesian models,an alternative strategy to Markov chain Monte Carlo (MCMC) sampling. MCMC algorithms try to sample a Markov chain, while the variational algorithms solve an optimization problem. variational inference tends to be faster and easier to scale to large data and high dimension.
 
-Variational inference has a close relationship with EM algorithm. You can view VAE, GAN as a certain form of variational inference. Variational inference doesn't have the global optimal point, that why VAE and GAN are very hard to train or converge.
-\paragraph{*Tips} Compare MCMC with Metropolis-Hasting (MH). MH larger the acceptance ratio $\alpha$. When extend to high dimensions, It is called Gibbs sampling. Actually, they are based on the same idea - bayesian stationary distribution. 
+Variational inference has a close relationship with EM algorithm. You can view VAE, GAN as a certain form of variational inference. Variational inference doesn't have the global optimal point, which make VAE/GAN are very hard to train or converge. That's why you can find a lot papers introducing how to train VAE/GAN more stable.
+\paragraph{*Notes} Compare MCMC with Metropolis-Hasting (MH). MH larger the acceptance ratio $\alpha$. When extend to high dimensions, It is called Gibbs sampling. Actually, they are based on the same idea - \textbf{bayesian stationary distribution}. 
 
 \paragraph{Question description} Suppose we have observations x, and hidden variables z, and some fixed parameters $\alpha$.What we want is the posterior distribution.
 $$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
@@ -150,7 +151,7 @@ Jensen's inequality are widely used in EM algorithm. In convex function, we have
 $$f(tx_{1}+(1-t)x_{2})\leq tf(x_{1})+(1-t)f(x_{2}) $$ 
 In the context of probability theory, if X is a random variable, and $\varphi$ is a convex function, then:
 $$\varphi(E[x]) \leq E[\varphi(x)]$$
-\paragraph{Back} to the problem, we have observations $x^{1},x^{2},...,x^{n}$, we want $p(x^{i})$ get the max probability. Using MLE on it, which is the sum of the log-likelihood,
+Back to the problem, we have observations $x^{1},x^{2},...,x^{n}$, we want $p(x^{i})$ get the max probability. Using MLE on it, which is the sum of the log-likelihood,
 $$logp_{\theta}(x^{1},x^{2},...,x^{n})=\sum_{i=1}^{N}logp_{\theta} (x^{i})$$
 and
 
@@ -211,13 +212,13 @@ $$\mathcal{L} =logp(x_{1:n})+E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})]$
 And we can remove the first term because it's irrevalte to $q(z_{j})$,the $\mathcal{L}$ can be written as
 
 \begin{align*}
-argmax_{q_{j}} \mathcal{L} &=E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})] \\
+\mathop{\arg\min}_{q_{j}} \mathcal{L} &=E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})] \\
 &= \int q(z_{j})E_{-j}[logp(z_{j}|z_{-j},x)]dz_{j}-\int q(z_{j})logq(z_{j})dz_{j}
 \end{align*}
 
 \subsection{Coordinate Ascent Variational Inference}
-From here we can use Lagrange multipliers. Let's treat $q(z_{j})$ as $f(x)$.
-For simplicity, I convert the formula into this:
+Let's treat $q(z_{j})$ as $f(x)$.
+For simplicity, I convert the formula above into this:
 $$\frac{d \mathcal{L}}{dq(z_{j})}=\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{d[f(x)]}=0$$
 this is equal to:
 $$\frac{d[\int Kf(x)dx- \int f(x)logf(x)dx]}{dx} \times \frac{•}{•}{dx}{d[f(x)]}=0$$
@@ -255,12 +256,97 @@ $$q^{*}(z_{j}) \propto exp \left\{ E_{-j}[logp(z_{j},z_{-j},x)] \right\}$$
 
 Note that there is generally no guarantee of convexity of ELBO, this coordinate ascent procedure converges to a local maximum.
 
-Finally, We can find this method is closely related to Gibbs sampling. Actually Gibbs sampling is a very classical approximate inference method. In variational inference,
+We can find this method is closely related to Gibbs sampling. Actually Gibbs sampling is a very classical approximate inference method. In variational inference,
 we take the expected log and set each variable’s variational factor iteratively.
+\section{Latent Dirichlet Allocation}
+LDA is a conditionally conjugate topic model comparing to PLSA. It treats documents as containing multiple topics, where a topic is a distribution over words in vocabulary. 
 
-\section{Latent Dirichlet Allocation} 
-\subsection{Introduction}
-LDA is a well known algorithm for topic modeling. You can view LDA as a bayesian version of PLSA (probabilistic latent semantic analysis). 
+Before we introduce the relationship with variational inference, let's go through some basic knowledge.
+\subsection{Conjugate Distributions}
+In Bayesian probability theory, if the posterior distirbution $p(\theta | x)$ is in same probability distirbution family as the prior distribution $p(\theta)$, the prior and posterior are then called \textbf{conjugate distributions}. And the prior is called \textbf{conjugate prior} for the likelihood function.
+
+\subsubsection{Beta-Binomial Distribution}
+Beta distribution is a conjugate prior for binomial distribution. For better understanding, Let's consider a simple problem here. 
+\paragraph{Question 1} For $X_{1},...,X_{n} \sim Uniform(0,1)$, what is the distirbution of $Kth$ largest number? 
+\paragraph{Answer 1} Let's assume the $Kth$ largest number locates in $[x,x+\Delta x]$. So there are K-1 numbers locate in $(0,x)$, and n-K numbers locate in $(x+\Delta x,1)$. Descirbe this in math: 
+$$P(x \leq X_{k} \leq x+\Delta x)=n \binom {n-1} {k-1} x^{k-1}(1-x-\Delta x)^{n-k}\Delta x$$
+Convert to PDF, set $\alpha=k, \beta=n-k+1$:
+$$f(x)= \lim_{\Delta x \rightarrow 0} \frac{P(x \leq X_{k} \leq x+\Delta x)}{\Delta x} =\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}x^{\alpha-1}(1-x)^{\beta-1} $$
+$$f(x)=\frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha,\beta)}, B(\alpha,\beta)=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$$
+This can also be denoted by:
+$$X \sim Beta(\alpha,\beta)$$
+
+\paragraph{Question 2} For $X_{1},...,X_{n} \sim Uniform(0,1)$, what is the distirbution of $Kth$ largest number? \\
+Given the knowledge: $Y_{1},...,Y_{m} \sim Uniform(0,1)$, there are $m_{1}$ $Y_{i}$ smaller than $X_{k}$, $m_{2}$ $Y_{i}$ larger than $X_{k}$.
+
+\paragraph{Answer 2}
+Describe the quesion in math, we have prior $X_{k} \sim Beta(\alpha,\beta)$,likelihood $m_{1} \sim B(m,X_{k})$, the posterior PDF now can be written as:
+$$X \sim Beta(\alpha+m_{1},\beta+m_{2})$$
+Actually you can treat X, Y as $X_{n},X'_{m} \sim Uniform(0,1)$. This question is the same as the previous one.
+
+\subsubsection{Dirichlet-Multinomial Distribution}
+Dirichlet-multinomial distribution is also called as ploya distribution. It is just a multivariate extension of beta-binomial distribution. Dirichlet is the high dimensional Beta distribution, like binomial to multivariate.
+$$f(x)=\frac{1}{B(\bm{\alpha} )}\prod_{i=1}^{K}x_{i}^{\alpha_{i}-1}$$
+where 
+$$B(\bm{\alpha})=\frac{\prod_{i=1}^{K} \Gamma(\alpha_{i})}{\Gamma(\sum_{i=1}^{K}\alpha_{i})}$$
+And we also have the same property:
+$$Prior_{Dir} + Likelihood_{Multi} = Posterior_{Dir}$$
+$$Dir(p|\bm{\alpha})+Multi(\bm{m})=Dir(p|\bm{\alpha+m})$$
+\subsection{Steps of LDA}
+Let K be a specific number of topics and V the size of vocabulary. LDA defines the following generative process: 
+
+\begin{enumerate}
+\item 
+{ For each topic in i = 1,...,$K$: 
+\begin{enumerate}
+\item draw a distribution over words $\phi_{i} \sim Dir_{V}(\beta)$
+\end{enumerate}
+}
+\item
+{ For each document in j=1,...,$M$:
+\begin{enumerate}
+\item draw a vector of topic proportions $\theta_{j} \sim Dir_{K}(\bm{\alpha})$
+\item For each word in t = 1,..., $N_{j}$:
+{
+\begin{enumerate}
+\item  draw a topic assignment $\bm{z}_{j,t}^{k} \sim Mult(\theta_{j})$
+\item draw a word $w_{j,t}^{v} \sim Mult(\phi_{\bm{z}_{j,t}^{k}})$
+\end{enumerate}
+}
+\end{enumerate}
+}
+\end{enumerate}
+Here $\beta$ is a fixed parameter of dirichlet prior on topics $\phi$ with respect to $V$. and $\bm{\alpha}$ are fixed parameters of dirichlet prior of topics on each document.
+
+Which can also be denoted as:
+$$p(\theta,z,\phi,w|\alpha,\beta)=\prod_{i=1}^{K} p(\phi_{k}|\beta)\prod_{j=1}^{M}\left( p(\theta_{j}|\alpha)\prod_{t=1}^{N_{j}} p(z_{j,t}|\theta_{j})p(w_{j,t}|\phi_{z_{j,t}})\right)$$
+
+\subsection{Variational Inference for LDA}
+Remember Section 4.1, we mentioned that a typical variational inference problem is: 
+$$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
+where $\alpha$ is fixed parameter and z is hidden variable. if we find $\int_z p(z,x|\alpha)dz$ intractable, we just create a new distribution $q(z|v)$ to approximate the posterior.\\
+\noindent
+Here for LDA, we have:
+$$p(\theta,\phi,z|w,\alpha,\beta) = \frac{p(\theta,\phi,z,w|\alpha,\beta)}{\int_{\theta} \int_{\phi} \sum_{z} p(\theta,\phi,z,w|\alpha,\beta)d_{\phi}d_{\theta} }$$
+where $\alpha$,$\beta$ are some fixed parameters, and $\theta,\phi,z$ are hidden parameters. 
+
+The topic assignments $z$ and their prior distirbution $\theta$ are in conjugate relationship, which is good. But the introduction of $\phi$ is in coupling with $z$ which makes the posterior intractable.
+
+So we can build a tractable distribution $q(\phi,\theta,z|\lambda ,\gamma, \pi)$, with variational variable $\lambda ,\gamma, \pi$
+\begin{align*}
+q(\phi,\theta,z|\lambda ,\gamma, \pi) &= \prod_{i=1}^{K}q(\phi_{i}|\lambda_{i}) \prod_{j=1}^{M}\left(q(\theta_{j}|\gamma_{j})\prod_{t=1}^{N_{j}}q(z_{j,t}|\pi_{j,t})\right)
+\end{align*}
+And we can measure the KL divergence between $p(\cdot)$ and $q(\cdot)$:
+\begin{align*}
+\mathcal{L} &= \mathop{\arg\min}_{\lambda ,\gamma, \pi} KL(q(\phi,\theta,z|\lambda ,\gamma, \pi)||p(\theta,\phi,z|w,\alpha,\beta))
+\end{align*}
+Since LDA is a conditionally conjugate model. We can directly identify the family of each variable:
+$$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
+$$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
+$$q(z|\pi) \sim Multi(\pi)  \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
+This is just the same question as section 4.3.2. We can calculate the ELBO and update the variational variable until ELBO converge:
+\paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
+\paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
 \end{document}
 
 
