@@ -292,8 +292,12 @@ $$B(\bm{\alpha})=\frac{\prod_{i=1}^{K} \Gamma(\alpha_{i})}{\Gamma(\sum_{i=1}^{K}
 And we also have the same property:
 $$Prior_{Dir} + Likelihood_{Multi} = Posterior_{Dir}$$
 $$Dir(p|\bm{\alpha})+Multi(\bm{m})=Dir(p|\bm{\alpha+m})$$
-\subsection{Steps of LDA}
-Let K be a specific number of topics and V the size of vocabulary. LDA defines the following generative process: 
+\subsection{Steps of Smoothed LDA}
+Original LDA Suppose there exists K topics among all documents. Each document j in M is a mixture of these topics, controled by $\theta_{j}$. And then we can  generate words for $d_{j}$ by first sampling a topic $z_{j,t}$ from $\theta_{j}$. And then sampling a word from corresponding topic $\phi_{z_{j,t}}$.
+
+The original LDA has a obvious weakness that it does not have prior for each $\phi_{k}$.  Smoothed LDA choose dirichlet parameterized by $\beta$ as the prior. and is commonly used now.
+
+Which is equal to the following steps: 
 
 \begin{enumerate}
 \item 
@@ -344,7 +348,7 @@ Since LDA is a conditionally conjugate model. We can directly identify the famil
 $$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
 $$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
 $$q(z|\pi) \sim Multi(\pi)  \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
-This is just the same question as section 4.3.2. We can calculate the ELBO and update the variational variable until ELBO converge:
+This is just the same question as section 4.3.2.
 \paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
 \paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
 \end{document}
