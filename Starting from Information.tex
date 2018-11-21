@@ -206,7 +206,7 @@ $$p(z_{1:m},x_{1:n})=p(x_{1:n}) \prod_{j=1}^{m}p(z_{j}|z_{1:(j-1)},x_{1:n})$$
 \subsubsection{Mean Field Method}
 Note that the order of j is irrelevant.Based on this theory, we can rewrite the lower bound as:
 \begin{align*}
-\mathcal{L} &= \sum_{j=1}^{m} E_{q}[logp(z_{j}|z_{1:(j-1)},x_{1:n})]-E_{q_{j}}[logq(z_{j})] 
+\mathcal{L} &= logp(x_{1:n})+\sum_{j=1}^{m} E_{q}[logp(z_{j}|z_{1:(j-1)},x_{1:n})]-E_{q_{j}}[logq(z_{j})] 
 \end{align*}
 Consider the variable $z_{j}$ comes last: 
 $$\mathcal{L} =logp(x_{1:n})+E_{q}[logp(z_{j}|z_{-j},x)]-E_{q_{j}}[logq(z_{j})]$$
