@@ -163,7 +163,8 @@ logp(x) & =log \int_{z}p(x,z) \\
  &\geq E_{q} \left[ log \frac{p(x,z)}{q(z)} \right] \\
  &\geq E_{q}[logp(x,z)]-E_{q}[logq(z)]
 \end{align*}
-Note the second term is the entropy\\
+Note the second term is the entropy. Now we have the evidence lower bound EBLO:
+$$log p(x) \geq E_{q}[logp(x,z)]+H(z)$$
 But what does this have to do with the KL divergence? 
 \subsubsection{KL Transformation}
 As mentioned, we want $q(z)$ and $q(z|x)$ are close to each other:
@@ -264,7 +265,7 @@ LDA\cite{geigle2016inference} is a conditionally conjugate topic model comparing
 
 Before we introduce the relationship with variational inference, let's go through some basic knowledge.
 \subsection{Conjugate Distributions}
-In Bayesian probability theory, if the posterior distirbution $p(\theta | x)$ is in same probability distirbution family as the prior distribution $p(\theta)$, the prior and posterior are then called \textbf{conjugate distributions}. And the prior is called \textbf{conjugate prior} for the likelihood function.
+In Bayesian probability theory, if the posterior distirbution $p(\theta | x)$ is in same probability distirbution family as the prior distribution $p(\theta)$, the prior and posterior are then )]called \textbf{conjugate distributions}. And the prior is called \textbf{conjugate prior} for the likelihood function.
 
 \subsubsection{Beta-Binomial Distribution}
 Beta distribution is a conjugate prior for binomial distribution. For better understanding, Let's consider a simple problem here. 
@@ -345,10 +346,20 @@ And we can measure the KL divergence between $p(\cdot)$ and $q(\cdot)$:
 \begin{align*}
 \mathcal{L} &= \mathop{\arg\min}_{\lambda ,\gamma, \pi} KL(q(\phi,\theta,z|\lambda ,\gamma, \pi)||p(\theta,\phi,z|w,\alpha,\beta))
 \end{align*}
-Since LDA is a conditionally conjugate model. We can directly identify the family of each variable:
+
+\begin{align*}
+\mathop{\arg\max}_{\lambda ,\gamma, \pi} ELBO =\sum_{i=1}^{K}E_{q}[log p(\phi_{i}|\beta)]+\sum_{j=1}^{M}E_{q}[log p(\theta_{j}|\alpha)] \\
++\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}E_{q}[logp(z_{j,t}|\theta_{j})] 
++\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}E_{q}[logp(w_{j,t}|\phi_{z_{j,t}})]
++H(q)
+\end{align*}
+$$H(q)=-E_{q}[logq(\phi|\lambda)]-E_{q}[logq(\theta|\gamma)]-E_{q}[logq(z|\pi)]$$
+Great! Just use Lagrange multiplies, problem solved!:) \\
+
+Actually as we know LDA is a conditionally conjugate model. We can directly identify the family of each variable:
 $$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
 $$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
-$$q(z|\pi) \sim Multi(\pi)  \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
+$$q(z|\pi) \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
 This is just the same question as section 4.3.2. We can apply the same algorithm to make the variables converge.
 \paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
 \paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
