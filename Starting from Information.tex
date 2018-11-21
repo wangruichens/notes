@@ -122,7 +122,8 @@ $$p(z|x)=\frac{p(x|z)p(z)}{p(x)}$$
 
 \section{Variational Bayesian Inference}
 \subsection{Variational Inference}
-The idea behind variational inference is to first posit a family of densities and then to find the member of that family which is close to the target. Closeness is measured by \textbf{Kullback-Leibler divergence} .
+The idea behind variational inference
+\cite{doi:10.1080/01621459.2017.1285773} is to first posit a family of densities and then to find the member of that family which is close to the target. Closeness is measured by \textbf{Kullback-Leibler divergence} .
 
 Variational inference is widely used to approximate posterior densities for Bayesian models,an alternative strategy to Markov chain Monte Carlo (MCMC) sampling. MCMC algorithms try to sample a Markov chain, while the variational algorithms solve an optimization problem. variational inference tends to be faster and easier to scale to large data and high dimension.
 
@@ -259,7 +260,7 @@ Note that there is generally no guarantee of convexity of ELBO, this coordinate 
 We can find this method is closely related to Gibbs sampling. Actually Gibbs sampling is a very classical approximate inference method. In variational inference,
 we take the expected log and set each variable’s variational factor iteratively.
 \section{Latent Dirichlet Allocation}
-LDA is a conditionally conjugate topic model comparing to PLSA. It treats documents as containing multiple topics, where a topic is a distribution over words in vocabulary. 
+LDA\cite{geigle2016inference} is a conditionally conjugate topic model comparing to PLSA. It treats documents as containing multiple topics, where a topic is a distribution over words in vocabulary. 
 
 Before we introduce the relationship with variational inference, let's go through some basic knowledge.
 \subsection{Conjugate Distributions}
@@ -348,9 +349,14 @@ Since LDA is a conditionally conjugate model. We can directly identify the famil
 $$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
 $$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
 $$q(z|\pi) \sim Multi(\pi)  \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
-This is just the same question as section 4.3.2.
+This is just the same question as section 4.3.2. We can apply the same algorithm to make the variables converge.
 \paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
 \paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+
 \end{document}
 
 
