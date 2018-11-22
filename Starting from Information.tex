@@ -359,7 +359,7 @@ Great! Just use Lagrange multiplies, problem solved!:) \\
 Actually as we know LDA is a conditionally conjugate model. We can directly identify the family of each variable:
 $$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
 $$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
-$$q(z|\pi) \propto exp(log \theta_{j,k}+log \phi_{k,w_{dn}})$$
+$$q(z|\pi) \propto exp(log \theta_{j,k}+log \phi_{k,w_{j,t}})$$
 This is just the same question as section 4.3.2. We can apply the same algorithm to make the variables converge.
 \paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
 \paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
