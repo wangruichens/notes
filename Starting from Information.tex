@@ -327,7 +327,7 @@ Here $\beta$ is a fixed parameter of dirichlet prior on topics $\phi$ with respe
 Which can also be denoted as:
 $$p(\theta,z,\phi,w|\alpha,\beta)=\prod_{i=1}^{K} p(\phi_{k}|\beta)\prod_{j=1}^{M}\left( p(\theta_{j}|\alpha)\prod_{t=1}^{N_{j}} p(z_{j,t}|\theta_{j})p(w_{j,t}|\phi_{z_{j,t}})\right)$$
 
-\subsection{Variational Inference for LDA}
+\subsection{ELBO for LDA}
 Remember Section 4.1, we mentioned that a typical variational inference problem is: 
 $$p(z|x,\alpha)=\frac{p(z,x|\alpha)}{\int_z p(z,x|\alpha)dz}$$
 where $\alpha$ is fixed parameter and z is hidden variable. if we find $\int_z p(z,x|\alpha)dz$ intractable, we just create a new distribution $q(z|v)$ to approximate the posterior.\\
@@ -354,15 +354,58 @@ And we can measure the KL divergence between $p(\cdot)$ and $q(\cdot)$:
 +H(q)
 \end{align*}
 $$H(q)=-E_{q}[logq(\phi|\lambda)]-E_{q}[logq(\theta|\gamma)]-E_{q}[logq(z|\pi)]$$
-Great! Just use Lagrange multiplies, problem solved!:) \\
+Great! Just use Lagrange multiplies, problem solved!:)
+\subsection{CAVI for LDA}
+\paragraph{Math Alert} This section is only about calculating the derivation of the ELBO. 
+Let analyse the $ELBO$ items one by one.
+\paragraph{1th 5th term}
+As the $\phi$ is just  outer constains with prior dirichlet parameter $\beta$ and multinomial likelihood. The updates about $\lambda$ can easily be denoted as : 
+$$\lambda_{i,v}=\beta_{v}+\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}\pi_{j,t,v}1(w_{j,t}=v)$$
 
+\paragraph{2th term}
+\begin{align*}
+E_{q}[log p(\theta_{j}|\alpha)] &= E_{q}[log(Dir(\alpha))] \\
+&=E_{q}\left[ log\left( \frac{\Gamma(\sum_{i=1}^{K}\alpha_{i})}{\prod_{i=1}^{K} \Gamma(\alpha_{i})} \prod_{i=1}^{K}\theta_{j,i}^{\alpha_{i}-1}\right)\right] \\
+&= log \Gamma(\sum_{i=1}^{K}\alpha_{i})-\sum_{i=1}^{K}log \Gamma(\alpha_{i}) +\sum_{i}^{k}(\alpha_{i}-1)E_{q}[log\theta_{j,i}]
+\end{align*}
+Now we only left with $E_{q}[log\theta_{j,i}]$, we use the fact that $\theta_{j} \sim Dir(\gamma_{j})$, the expectation is equal to the derivate of log normalizer (*sufficient statistics exponential family).
+$$E_{q}[log\theta_{j,i}]=\frac{da(\gamma_{j,i})}{d\gamma_{j,i}}=\Psi(\gamma_{j,i})-\Psi\left( \sum_{i=1}^{k} \gamma_{j,i} \right)$$
+\paragraph{3th term}
+\begin{align*}
+\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}E_{q}[logp(z_{j,t}| \theta_{j})] &=E_{q}\left[ \sum_{j=1}^{M}\sum_{t=1}^{N_{j}} 1(z_{j,t}=i)log \theta_{j,i} \right] \\
+&= \sum_{j=1}^{M}\sum_{t=1}^{N_{j}} \pi_{i,j,t} \left( \Psi(\gamma_{j,i})-\Psi\left( \sum_{i=1}^{k} \gamma_{j,i} \right)\right)
+\end{align*}
+\paragraph{4th term}
+\begin{align*}
+\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}E_{q}[logp(w_{j,t}|\phi_{z_{j,t}})] &= E_{q}\left[\sum_{j=1}^{M}\sum_{t=1}^{N_{j}}\sum_{r=1}^{V}1(z_{j,t}=i)1(w_{j,t}=r)log\phi_{i,r} \right] \\
+&= \sum_{j=1}^{M}\sum_{t=1}^{N_{j}}\sum_{r=1}^{V} \pi_{i,j,t}1(w_{j,t}=r) log\phi_{i,r}
+\end{align*}
+\paragraph{6th term}
+This is the same with the 2th term
+$$E_{q}[logq(\theta_{j}|\gamma_{j})] = log \Gamma(\sum_{i=1}^{K}\gamma_{i})-\sum_{i=1}^{K}log \Gamma(\gamma_{i}) +\sum_{i}^{k}(\gamma_{i}-1)E_{q}[log\gamma_{j,i}] $$
+\paragraph{7th term} Just a multinomial expectation
+\begin{align*}
+E_{q}[log(z_{j}|\pi_{j})] &=E_{q}\left[ \sum_{t=1}^{N_{j}}\sum_{i=1}^{K}1(z_{j,t}=i)log\pi_{j,i,t} \right] \\
+&= \sum_{t=1}^{N_{j}}\sum_{i=1}^{K} \pi_{j,i,t}log \pi_{j,i,t}
+\end{align*}
+
+Now we can finally have the updates of those variables:
+$$\frac{\partial \mathcal{L}}{\partial \pi_j,i,t},\sum \pi_{j,i,t}=1 \longrightarrow 
+\pi_{j,i,t} \propto \phi_{i,w_{j,t}} exp\left[ \Psi(\gamma_{j,i})-\Psi\left(\sum_{i=1}^{k} \gamma_{j,i}\right) \right]$$ 
+
+$$\frac{\partial \mathcal{L}}{\partial \gamma_{j,i}} \longrightarrow \alpha_{i}+\sum_{t=1}^{N_{j}} \pi_{j,t,i} $$
+
+
+
+
+\subsection{Variational Inference LDA}
 Actually as we know LDA is a conditionally conjugate model. We can directly identify the family of each variable:
 $$q(\phi|\lambda) \sim Dir_{v}(\lambda) \sim Dir_{v}\left(\beta+\sum_{j=1}^{M}\sum_{t=1}^{N}z_{j,t} w_{j,t} \right)$$
 $$q(\theta|\gamma) \sim Dir_{k}(\gamma) \sim  Dir_{k}(\alpha+\sum_{t=1}^{N}z_{j,t}) $$
-$$q(z|\pi) \propto exp(log \theta_{j,k}+log \phi_{k,w_{j,t}})$$
+$$q(z|\pi) \propto exp(log \theta_{j,i}+log \phi_{i,w_{j,t}}) =  \phi_{i,w_{j,t}} exp[E_{q}(log \theta_{j,i})]$$
 This is just the same question as section 4.3.2. We can apply the same algorithm to make the variables converge.
-\paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$ until converge
-\paragraph{M-step:} using $q(\cdot)$ re-estimate $\lambda$
+\paragraph{E-step:} for each document j, each word t, compute $\pi, \gamma$,minimize $KL(p||q)$ until converge
+\paragraph{M-step:} using $q(\cdot)$ re-estimate $\phi$ by updating $\lambda$
 
 \bibliographystyle{plain}
 \bibliography{ref}
