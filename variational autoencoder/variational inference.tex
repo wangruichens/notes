@@ -60,9 +60,9 @@ max \mathcal{L} &= E_{q_{\phi}(z|x)}log p_{\theta}(x,z) -E_{q_{\phi}(z|x)}logq_{
 &= E_{q_{\phi}(z|x)}[logp_{\theta}(x|z)+logp_{\theta}(z)]-E_{q_{\phi}(z|x)}logq_{\phi}(z|x) \\
 &= E_{q_{\phi}(z|x)}logp_{\theta}(x|z)-D_{KL}(q_{\phi}(z|x)||p_{\theta}(z))
 \end{align*}
-As you can see, the first term is the negative cross entropy $-H(q_{\phi}(z|x),p_{\theta}(x|z))$, which measures the reconstruction likelihood. The second term is regulation which encouraging the prior $p_{\theta}(z)$ to be closed to the aprroximate posterior $q_{\phi}(z|x)$.
+As you can see, the first term is the negative cross entropy $-H(q_{\phi}(z|x),p_{\theta}(x|z))$, which measures the reconstruction likelihood. The second term can be viewed as the regulation of $q_{\phi}(z|x)$, which encouraging the prior $p_{\theta}(z)$ to be closed to the aprroximate posterior $q_{\phi}(z|x)$.
 \subsection{Reparameterization Trick}
-To solve the problem, we invoked a distribution $q_{\phi}(z|x)$. As $z$ is sampled from some latent distirbution, it is not able to calculate the gradient. We use a method called \textbf{reparameterization trick} to rewrite the expectation in order to backpropagate.
+In the loss function, we invoked a distribution $q_{\phi}(z|x)$, which will generate sameple latent variables from observation. As $z$ is sampled from some latent distirbution, it is not able to calculate the gradient. We use a method called \textbf{reparameterization trick} to rewrite the expectation in order to backpropagate.
 
 \subsubsection{Example} 
 Assume we have a normal distribution $q$ that is parameterized by $\theta$, specially $q_{\theta}(x)=N(\theta,1)$. We want to solve the below problem:
@@ -92,15 +92,26 @@ The biggest advantage of this approach is that we many now write the gradient as
 $$\nabla_{\phi}E_{q(z|x)}[f(x,z)]=\nabla_{\phi}E_{p(\epsilon)}[f(x,g(\epsilon,x))]=E_{p(\epsilon)}[\nabla_{\phi}f(x,g(\epsilon,x))]$$
 So we can write the frist term of ELBO as :
 $$E_{q_{\phi}(z|x)}logp_{\theta}(x|z)=E_{p(\epsilon)}[logp_{\theta}(x|g(\epsilon,x))]=\frac{1}{L}\sum_{l=1}^{L}logp_{\theta}(x|g(\epsilon^{l},x)) $$
-Now we take the sampling operation outside the network, which is sampling $\epsilon$ instead of $z$.
+
+Now we take the sampling operation outside the network. Now we just perform sampling operation on $\epsilon$ instead of $z$.
+
+\subsection{KL Divergence}
+Now let's decide which prior knowledge $p_{\theta}(z)$ to use, as $p_{\theta}(z)$ comes from our assumptions. It can be any arbitrary function. However, there are some pre-requisite. First it should be flexible enough to represent the richness of the data. Second , it should be easy to sample.
+
+Here we can just choose $p_{\theta}(z) \sim N(0,1)$, which means our assumption posterior $q_{\phi}(z|x)$ should be closed to $N(0,1)$. The KL divergence can be  denoted as :
+\begin{align*}
+D_{KL}(q_{\phi}(z|x)||p_{\theta}(z)) &=D_{KL}[N(\mu(x),\sigma(x)||N(0,1))] \\
+&= \frac{1}{2}(\sigma^{2}+\mu^{2}-log\sigma^{2}-1)
+\end{align*}
+Now the full loss function will be :
+$$\mathop{\arg\max}_{\theta,\mu,\sigma}\mathcal{L} =\frac{1}{L}\sum_{l=1}^{L}logp_{\theta}(x|g(\epsilon^{l},x)) -\frac{1}{2}\sum_{j=1}^{J}(\sigma_{j}^{2}+\mu_{j}^{2}-log\sigma_{j}^{2}-1)$$
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=2.5in]{graph3}
 \caption{Left without reparameterization trick. Right with it. The sampling operation is equivalent. But backpropagation can only be applied
 to the right.\cite{DBLP:journals/corr/Doersch16}}
 \end{figure}
-
-
+ 
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=5in]{result1}
