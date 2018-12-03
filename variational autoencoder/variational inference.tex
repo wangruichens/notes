@@ -17,7 +17,7 @@ Variational auto-encoder \cite{DBLP:journals/corr/KingmaW13} is a very powful ge
 \end{abstract}
 
 \tableofcontents
-\section{What is VAE?} 
+\section{Introduction} 
 Variational auto-encoder is a brilliant combination of deep learning and variational inferece. It was proposed by Kingma in 2013. It provides a probabilistic manner for describing an observation in latent space. The encoder is aimed to describe a probability distribution for each latent attribute.
 \begin{figure}[h]
 \centering
@@ -96,15 +96,17 @@ $$E_{q_{\phi}(z|x)}logp_{\theta}(x|z)=E_{p(\epsilon)}[logp_{\theta}(x|g(\epsilon
 Now we take the sampling operation outside the network. Now we just perform sampling operation on $\epsilon$ instead of $z$.
 
 \subsection{KL Divergence}
-Now let's decide which prior knowledge $p_{\theta}(z)$ to use, as $p_{\theta}(z)$ comes from our assumptions. It can be any arbitrary function. However, there are some pre-requisite. First it should be flexible enough to represent the richness of the data. Second , it should be easy to sample.
+Now let's decide which prior knowledge $p_{\theta}(z)$ to use, as $p_{\theta}(z)$ comes from our assumptions. It can be any arbitrary function. However, there are some pre-requisite. First it should be flexible enough to represent the richness of the data. Second , it should be easy to sample. We may view the KL divergence as a regularization term to the $q_{\phi}(z|x)$.
 
 Here we can just choose $p_{\theta}(z) \sim N(0,1)$, which means our assumption posterior $q_{\phi}(z|x)$ should be closed to $N(0,1)$. The KL divergence can be  denoted as :
 \begin{align*}
 D_{KL}(q_{\phi}(z|x)||p_{\theta}(z)) &=D_{KL}[N(\mu(x),\sigma(x)||N(0,1))] \\
 &= \frac{1}{2}(\sigma^{2}+\mu^{2}-log\sigma^{2}-1)
 \end{align*}
+
 Now the full loss function will be :
 $$\mathop{\arg\max}_{\theta,\mu,\sigma}\mathcal{L} =\frac{1}{L}\sum_{l=1}^{L}logp_{\theta}(x|g(\epsilon^{l},x)) -\frac{1}{2}\sum_{j=1}^{J}(\sigma_{j}^{2}+\mu_{j}^{2}-log\sigma_{j}^{2}-1)$$
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=2.5in]{graph3}
@@ -115,8 +117,11 @@ to the right.\cite{DBLP:journals/corr/Doersch16}}
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=5in]{result1}
-\caption{Generated images}
+\caption{VAE generated images, the blurry comes from global optimization as VAE makes pixel-by-pixel comparisions.(similar to L2 reconstruction loss)}
 \end{figure}
+
+\section{Conclution}
+Unlike auto-encoder, VAE assume that there is no simple interpretation about the dimension of z. It assert the assumption that z can be drawn from a simple distribution $N(0,I)$. This is mainly based on the idea that any distributoin can be generated through a normally distribution plus a sufficiently complicated function.
 
 
 \bibliographystyle{plain}
