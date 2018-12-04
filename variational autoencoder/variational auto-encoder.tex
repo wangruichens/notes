@@ -13,12 +13,12 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Variational auto-encoder \cite{DBLP:journals/corr/KingmaW13} is a very powful generative model. It can be used to generate or convert videos, images, texts, sounds etc. 
+Variational auto-encoder \cite{DBLP:journals/corr/KingmaW13} belongs to generative model family which also include pixelRNN, GAN.These are very powerful unsupervised learning algorithms. They can be used to generate or convert videos, images, texts, sounds etc. VAE has a lot variants, most well known is the C-VAE. This article is mainly about the vanilla version.
 \end{abstract}
 
 \tableofcontents
 \section{Introduction} 
-Variational auto-encoder is a brilliant combination of deep learning and variational inferece. It was proposed by Kingma in 2013. It provides a probabilistic manner for describing an observation in latent space. The encoder is aimed to describe a probability distribution for each latent attribute.
+Variational auto-encoder is a brilliant combination of deep learning and variational inferece. It was proposed by Kaiming He in 2013. It provides a probabilistic manner for describing an observation in latent space. The encoder is aimed to describe a probability distribution for each latent attribute.
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=1.5in]{graph1}
@@ -64,7 +64,7 @@ As you can see, the first term is the negative cross entropy $-H(q_{\phi}(z|x),p
 \subsection{Reparameterization Trick}
 In the loss function, we invoked a distribution $q_{\phi}(z|x)$, which will generate sameple latent variables from observation. As $z$ is sampled from some latent distirbution, it is not able to calculate the gradient. We use a method called \textbf{reparameterization trick} to rewrite the expectation in order to backpropagate.
 
-\subsubsection{Example} 
+\subsubsection{An Example for Understanding} 
 Assume we have a normal distribution $q$ that is parameterized by $\theta$, specially $q_{\theta}(x)=N(\theta,1)$. We want to solve the below problem:
 $$\mathop{\arg\min}_{\theta} E_{q}(x^{2})$$
 It is quite obvious that $E(x^{2})=E(x)^{2}+D(x)=\theta^{2}+1$. $\theta=0$ is the answer. We want to see how reparameterization trick can help us solve this problem in calculating the gradients. 
@@ -79,16 +79,16 @@ As you can see the expectation is based on $q_{\theta}$. Using reparameterizatio
 
 We make $p(\epsilon) \sim N (0,1)$, $x=\theta+\epsilon$. Hence: 
 $$\nabla_{\theta}E_{q}[x^{2}]=E_{p}[\nabla_{\theta}(\theta+\epsilon)^{2}]=E_{p}(2(\theta+\epsilon))$$
-Now we can also get our result $\theta=0$. Using reparameterization trick can also make the variance of gradience more stable.
+Now we see that when $\theta=0$, we get the global minimum. Using reparameterization trick let us be able to calcualte the gradient on the distribution parameter.
 
 \subsubsection{Reparametrization for the Posterior } 
 First we sample a noise variable 
 $$\epsilon \sim p(\epsilon)= N(0,1)$$
 Then we apply a transform $g_{\phi}(\epsilon,x)$ that maps the random noise to a complex distribution. 
 $$z=g_{\phi}(\epsilon,x)$$
-Here we choose gaussian $z\sim q_{\mu,\sigma}(z)=N(\mu,\sigma)$, which is also can be denoted as :
+Here we choose gaussian $z\sim g_{\mu,\sigma}(z)=N(\mu,\sigma)$, where $\mu$ and $\sigma$ is generated from $x$. $\epsilon$ is the reparametrization variable. which is also can be denoted as :
 $$z=g_{\mu,\sigma}(\epsilon)=\mu+\epsilon \cdot \sigma$$
-The biggest advantage of this approach is that we many now write the gradient as:
+The biggest advantage of this approach is that we may now write the gradient as:
 $$\nabla_{\phi}E_{q(z|x)}[f(x,z)]=\nabla_{\phi}E_{p(\epsilon)}[f(x,g(\epsilon,x))]=E_{p(\epsilon)}[\nabla_{\phi}f(x,g(\epsilon,x))]$$
 So we can write the frist term of ELBO as :
 $$E_{q_{\phi}(z|x)}logp_{\theta}(x|z)=E_{p(\epsilon)}[logp_{\theta}(x|g(\epsilon,x))]=\frac{1}{L}\sum_{l=1}^{L}logp_{\theta}(x|g(\epsilon^{l},x)) $$
@@ -107,25 +107,26 @@ D_{KL}(q_{\phi}(z|x)||p_{\theta}(z)) &=D_{KL}[N(\mu(x),\sigma(x)||N(0,1))] \\
 Now the full loss function will be :
 $$\mathop{\arg\max}_{\theta,\mu,\sigma}\mathcal{L} =\frac{1}{L}\sum_{l=1}^{L}logp_{\theta}(x|g(\epsilon^{l},x)) -\frac{1}{2}\sum_{j=1}^{J}(\sigma_{j}^{2}+\mu_{j}^{2}-log\sigma_{j}^{2}-1)$$
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=5in,height=2.5in]{graph3}
 \caption{Left without reparameterization trick. Right with it. The sampling operation is equivalent. But backpropagation can only be applied
 to the right.\cite{DBLP:journals/corr/Doersch16}}
 \end{figure}
  
-\begin{figure}[h]
-\centering
-\includegraphics[width=5in,height=5in]{result1}
-\caption{VAE generated images, the blurry comes from global optimization as VAE makes pixel-by-pixel comparisions.(similar to L2 reconstruction loss)}
-\end{figure}
 
-\section{Conclution}
+
+\section{Conclusion}
 Unlike auto-encoder, VAE assume that there is no simple interpretation about the dimension of z. It assert the assumption that z can be drawn from a simple distribution $N(0,I)$. This is mainly based on the idea that any distributoin can be generated through a normally distribution plus a sufficiently complicated function.
 
-
+\begin{figure}[H]
+\centering
+\includegraphics[width=5in,height=5in]{result1}
+\caption{VAE generated images, the blurry comes from global optimization as VAE makes pixel-by-pixel comparisions.(similar to L2 reconstruction loss). In GAN, the results tend to have better resolution. I will introduce it in another article.}
+\end{figure}
 \bibliographystyle{plain}
 \bibliography{ref}
+
 
 \end{document}
 
