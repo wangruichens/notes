@@ -114,9 +114,13 @@ If we follow the straight forward computation, the cost will be $O(kn^{2})$. We 
 &= \frac{1}{2}\sum_{m=1}^{k}\left( \left(\sum_{i=1}^{n}v_{i,m}x_{i}\right)^{2} -\sum_{i=1}^{n}v_{i,m}^{2}x_{i}^{2} \right)
 \end{align*}
 
+\paragraph{Learning FM model} Introduced by libFM\cite{DBLP:journals/tist/Rendle12}, there are three ways to optimize this task, SGD, ALS and MCMC inference. Details and comparison is presented in the paper, I'm not going too deep here.
 
-
-\subsubsection{ALS}
+\begin{figure}[H]
+\centering
+\includegraphics[width=3in,height=2in]{figure3}
+\caption{Original paper shows that FM succeed in 2-way variable interactions while SVM doesn't converge at all.}
+\end{figure}
 \subsection{FFM}
 \section{Incorporate with Deep Learing}
 \subsection{FNN}
