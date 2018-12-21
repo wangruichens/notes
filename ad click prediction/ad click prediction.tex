@@ -91,8 +91,32 @@ Thus FTRL-Proximal stores $z$ in memory, whereas OGD stores $w$.
 \paragraph{Per-coordinate leaning} Standard online learning gradient descent suggest using a global learning rate schedule $\eta=\frac{1}{\sqrt{t}}$, which is common for all coordinates. As some coordinate updates frequently and some not. It makes more sense to represent the gradient per coordinate:
 $$\eta_{t,i}=\frac{\alpha}{\beta+\sqrt{\sum_{s=1}^{t}g^{2}_{s,i}}}$$
 $\beta$ is simply for numeric stable sake, ensures that early learning rate not too high. $\beta=1$ is usually good enough. 
-\section{No Linearity and Feature Engineering}
-\subsection{FM}
+\section{Collaborative Filtering}
+\subsection{Factorization Machines (FM)}
+In recommender system, we may want the model to be able to estimate interactions between large feature dimensions, while keeping the sparsity.
+FM \cite{DBLP:conf/icdm/Rendle10} is designed to deal with highly sparse features.It has linear complexity, and can work with any real valued feature vector. It can be used in many prediction task like regression, binary classification and ranking. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=5in,height=2in]{figure2}
+\caption{Sparse user features and target y.}
+\end{figure}
+\paragraph{Model equation} Given $x \in R^{n}$, the model parameters that have to be estimated are $ w_{0} \in R, \textbf{w} \in R^{n}, \textbf{V} \in R^{n \times k}$.
+$$\widehat{y}= w_{0}+\sum_{i=1}^{n}w_{i}x_{i}+\sum_{i=1}^{n}\sum_{j=i+1}^{n}\langle \textbf{v}_{i} ,\textbf{v}_{j} \rangle x_{i}x_{j}$$
+where 
+$$\langle \textbf{v}_{i} ,\textbf{v}_{j} \rangle =\sum_{m=1}^{k}v_{i,m} \cdot v_{j,m}$$
+Based on the theory that for any positive definite matrix (semi-positive definite) \textbf{w}, there exists a matrix \textbf{v} such that $\textbf{w}=\textbf{v} \cdot \textbf{v}^\mathrm{T}$ if k is not limited. In practice, we often pick a small $k$ for better generalization
+and thus improved interaction matrices under sparsity.
+\paragraph{Computation}
+If we follow the straight forward computation, the cost will be $O(kn^{2})$. We can apply some mathematics transformations to reduce the computation to linear time $O(kn)$.
+\begin{align*}
+\sum_{i=1}^{n}\sum_{j=i+1}^{n}\langle \textbf{v}_{i} ,\textbf{v}_{j} \rangle x_{i}x_{j}
+&= \frac{1}{2} \sum_{i=1}^{n}\sum_{j=1}^{n}\langle \textbf{v}_{i} ,\textbf{v}_{j} \rangle x_{i}x_{j} -\frac{1}{2}\sum_{i=1}^{n}\langle \textbf{v}_{i} ,\textbf{v}_{i} \rangle x_{i}x_{i} \\
+&= \frac{1}{2}\sum_{m=1}^{k}\left( \left(\sum_{i=1}^{n}v_{i,m}x_{i}\right)^{2} -\sum_{i=1}^{n}v_{i,m}^{2}x_{i}^{2} \right)
+\end{align*}
+
+
+
+\subsubsection{ALS}
 \subsection{FFM}
 \section{Incorporate with Deep Learing}
 \subsection{FNN}
