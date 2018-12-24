@@ -121,9 +121,26 @@ If we follow the straight forward computation, the cost will be $O(kn^{2})$. We 
 \includegraphics[width=3in,height=2in]{figure3}
 \caption{Original paper shows that FM succeed in 2-way variable interactions while SVM doesn't converge at all.}
 \end{figure}
-\subsection{FFM}
+\subsection{Field-aware Factorization Machines (FFM)}
+In FM, every feature has only one latent vector to learn the latent effect with any other features. For example, conside two pair of interaction, $(w_{male},w_{games}), (w_{male},w_{dance})$. As games and dance clearly belong to different field. FFM \cite{DBLP:conf/recsys/JuanZCL16}
+claims that the latent effects at different field should be differ too.
+Mathematically,
+$$\phi_{FFM}(\textbf{w},\textbf{x})=\sum_{i=1}^{n} \sum_{j=i+1}^{n}(\textbf{w}_{i,f_{j}},\textbf{w}_{j,f_{i}})\textbf{x}_{i} \textbf{x}_{j}$$
+If $f$ is the number of fields, then the number of variables of
+FFMs is $nfk$, and the complexity to compute is $O(n^{2}k)$. It is worth noting that in FFMs because each latent vector only needs to learn the effect with a specific field (represent feature using a few of short vectors instead of a long vector), usually
+$$k_{FFM} \ll k_{FM}$$
+In kaggle Criteo and Avazu competition, FFM outperform FM. The practical stochastic gradient leaning rate schedule is proposed in \cite{DBLP:conf/pakdd/ChinZJL15}. 
+
+
 \section{Incorporate with Deep Learing}
 \subsection{FNN}
+FM performs a very good job at collaborative filtering on recommendation. It is regarded as one of the most successful embedding models.
+Proposed by  \textsl{Weinan Zhang}, factorization machine supported neuaral network (FNN) pretrains FM  and then applys the DNN part on it. FM mainly used to convert the high dimensional sparse binary features into a dense feature. DNN 
+\begin{figure}[h]
+\centering
+\includegraphics[width=4in,height=2.5in]{fnn}
+\caption{A 4-layer FNN structure.}
+\end{figure}
 \subsection{PNN}
 \subsection{Deep and Wide}
 \subsection{DeepFM}

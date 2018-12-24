@@ -18,12 +18,12 @@ Variational auto-encoder \cite{DBLP:journals/corr/KingmaW13} belongs to generati
 
 \tableofcontents
 \section{Introduction} 
-Variational auto-encoder is a brilliant combination of deep learning and variational inferece. It was proposed by Kaiming He in 2013. It provides a probabilistic manner for describing an observation in latent space. The encoder is aimed to describe a probability distribution for each latent attribute.
+Variational auto-encoder is a brilliant combination of deep learning and variational inferece. It was proposed by Kingma in 2013, who is also the author of Adam. It provides a probabilistic manner for describing an observation in latent space. The encoder is aimed to describe a probability distribution for each latent attribute.
 \begin{figure}[h]
 \centering
 \includegraphics[width=5in,height=1.5in]{graph1}
 \caption{VAE graph model}
-\end{figure}
+\end{figure}2
 \subsection{Intuition}
 In the past, we want the encoder to learn some  dimensions of input as the compressed feature. Using a variational autoencoder, we describe those latent dimensions in probabilistic terms.we'll now instead represent each latent attribute for a given input as a probability distribution. And we will perform random sampling on the distirbution to feed the decoder. We expecting the decoder can accurately reconstruct the input.
 
