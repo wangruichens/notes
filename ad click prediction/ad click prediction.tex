@@ -97,7 +97,7 @@ In recommender system, we may want the model to be able to estimate interactions
 FM \cite{DBLP:conf/icdm/Rendle10} is designed to deal with highly sparse features.It has linear complexity, and can work with any real valued feature vector. It can be used in many prediction task like regression, binary classification and ranking. 
 \begin{figure}[H]
 \centering
-\includegraphics[width=5in,height=2in]{figure2}
+\includegraphics[width=4.9in,height=2in]{figure2}
 \caption{Sparse user features and target y.}
 \end{figure}
 \paragraph{Model equation} Given $x \in R^{n}$, the model parameters that have to be estimated are $ w_{0} \in R, \textbf{w} \in R^{n}, \textbf{V} \in R^{n \times k}$.
@@ -160,9 +160,34 @@ $$P(Y=1|\textbf{x})=\sigma(\textbf{w}_{wide}^{T}[\textbf{x},\phi(\textbf{x})]
 )$$
 where the $\sigma(\cdot)$ is the sigmoid function, $\phi(\textbf{x})$ is the cross product transformations, and $a^{(l_{f})}$ is the activations. Note that the cross product transformation(wide part) only takes user installed app and impression app as input.
 \subsection{DeepFM}
-DeepFM\cite{DBLP:journals/corr/GuoTYLH17}
-\subsection{DNN}
+DeepFM\cite{DBLP:journals/corr/GuoTYLH17} proposed in 2017 IJCAI, combines the FM and DNN like FNN. It jointly trains the model instead of pre-train FM layer, provides an end-to-end solution while captures both low and high order feature interactions. And provide a testing on benchmark data(criteo dataset) demonstrate the effectiveness and efficiency.
+$$\widehat{y}=\sigma(y_{FM}+y_{DNN})$$
+\begin{figure}[H]
+\centering
+\includegraphics[width=4.5in,height=2.3in]{deepFM}
+\caption{DeepFM model architecture. Note that (\textrm{i}) embedding output is fixed size. (\textrm{ii}) each field is separately embedded. (\textrm{iii})FM and deep component share the same feature embedding.}
+\end{figure}
+\subsection{Deep \& Cross Network (DCN)}
+As you may find, the target of recsys is building an end to end model, which takes web-scale sparse and dense feature, capture both shallow and deep interactions without manual feature engineering. Deep \& cross network \cite{DBLP:journals/corr/abs-1708-05123} proposed in 2017 ADKDD claimed to be a model descirbed above. It starts with \emph{embedding} and \emph{stacking}, then combines \emph{a deep network} and \emph{a cross network}.
 
+As is known to all, converting categorical features into one-hot encoding may cause excessively high dimensional feature space. DCN model first employs an embedding procedure.
+$$\textbf{x}_{embed,i}=\textbf{W}_{embed,i}\textbf{x}_{i}$$
+where embedding matrix $\textbf{W}_{embed}$ is optimized together.
+
+Then stack the embedding vectors with normalized dense feature and feed $\textbf{x}_{0}$ to the network.
+$$\textbf{x}_{0}=[\textbf{x}_{embed,1}^{T},...,\textbf{x}_{embed,k}^{T},\textbf{x}_{dense}^{T} ]$$
+It's worth noting that the cross network trying to fit the residual of $\textbf{x}_{l+1}-\textbf{x}_{l}$.
+$$\textbf{x}_{l+1}=\textbf{x}_{0}\textbf{x}_{l}^{T}\textbf{w}_{l} +\textbf{b}_{l} + \textbf{x}_{l}$$
+The deep part is quite simple:
+$$\textbf{h}_{l+1}=f(\textbf{W}_{l}\textbf{h}_{l}+\textbf{b}_{l})$$
+where $f(\cdot)$ is the RELU function.
+\begin{figure}[H]
+\centering
+\includegraphics[width=4in,height=4in]{dcn}
+\caption{The Deep \& Cross Network.}
+\end{figure}
+
+\paragraph{Experimental Result(criteo)} DCN outperforms LR, deep \& wide, and deep crossing(DC). And DCN is quite memory efficient. In particular, it outperforms the state-of-art DNN model but uses only 40$\%$ of the memory consumed in DNN.
 \bibliographystyle{plain}
 \bibliography{ref}
 
