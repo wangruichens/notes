@@ -60,7 +60,7 @@ where $f$ is the empirical loss and $r$ is a regularization term that penalized 
 FOBOS updates the $w$ in 2 steps, forward-looking subgradients and forward-backward spliting. May sound complex, Actually it's very simple. 
 $$w_{t+\frac{1}{2}}=w_{t}-\eta_{t} g_{t}$$
 $$w_{t+1}=\mathop{\arg\min}_{w_{t}} \left \{ {\frac{1}{2} || w_{t}-w_{t+\frac{1}{2}}||}^{2}+\eta_{t+\frac{1}{2}}r(w_{t}) \right \} $$
-The first step is apply the gradient to the weight. The second step mainly contributes to the sparsity.It can be viewed as (\textrm{i})let the updated weight be close to the previous one (\textrm{ii}) attain a low complexity.
+The first step is apply the gradient to the weight. The second step mainly contributes to the sparsity. It can be viewed as (\textrm{i})let the updated weight be close to the previous one (\textrm{ii}) attain a low complexity.
 \subsection{Regularized Dual Averaging Algorithm (RDA)}
 RDA\cite{DBLP:journals/jmlr/Xiao10} condsider the learning variables are adjusted by solving a simple minimization problem that involves the running average of all past subgradients of the loss function and
 the whole regularization term, not just its subgradient.
@@ -133,17 +133,34 @@ In kaggle Criteo and Avazu competition, FFM outperform FM. The practical stochas
 
 
 \section{Incorporate with Deep Learing}
-\subsection{FNN}
+\subsection{FNN and PNN}
 FM performs a very good job at collaborative filtering on recommendation. It is regarded as one of the most successful embedding models.
-Proposed by  \textsl{Weinan Zhang}, factorization machine supported neuaral network (FNN) pretrains FM  and then applys the DNN part on it. FM mainly used to convert the high dimensional sparse binary features into a dense feature. DNN 
-\begin{figure}[h]
+
+Proposed by  \textsl{Weinan Zhang}, published at IJCAI, factorization machine supported neuaral network (FNN) \textbf{pretrains} FM  and then applys the DNN part on it. FM mainly used to convert the high dimensional sparse binary features into a dense feature.
+\begin{figure}[H]
 \centering
 \includegraphics[width=4in,height=2.5in]{fnn}
 \caption{A 4-layer FNN structure.}
 \end{figure}
-\subsection{PNN}
-\subsection{Deep and Wide}
+It key idea of this paper is that it trys a combination of FM and DNN. In the same year, PNN\cite{DBLP:conf/icdm/QuCRZYWW16}, published at ICDM, was proposed by the same group of people. The only different is that it adds a product layer between FM and DNN.
+\subsection{Deep \& Wide Learning}
+Both FNN and PNN fails to capture the low order feature interactions. And it is often the case that there should be no interactions between most query-item pairs. But the dense embeddings will lead to nonzero predictions for all pairs.
+
+While in Google's deep \& wide network\cite{DBLP:conf/recsys/Cheng0HSCAACCIA16}, wide linear models and deep neural networks are jointly trained. Combines the \textbf{memorization} and \textbf{generalization} for recommender system.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=4.5in,height=2.3in]{deepandwide}
+\caption{Deep \& Wide model.}
+\end{figure}
+Google claims that jointly training the deep and wide model needs less data to achieve reasonable accuracy, as the wide part only needs to complement the weeknesses of deep part, rather than a full-size wide model.
+In experiments, they use FTRL with $L_{1}$ regularization on the wide part, and use AdaGrad for the deep part. The model can be denoted as :
+$$P(Y=1|\textbf{x})=\sigma(\textbf{w}_{wide}^{T}[\textbf{x},\phi(\textbf{x})]
++ \textbf{w}_{deep}^{T}a^{(l_{f})} +b
+)$$
+where the $\sigma(\cdot)$ is the sigmoid function, $\phi(\textbf{x})$ is the cross product transformations, and $a^{(l_{f})}$ is the activations. Note that the cross product transformation(wide part) only takes user installed app and impression app as input.
 \subsection{DeepFM}
+DeepFM\cite{DBLP:journals/corr/GuoTYLH17}
 \subsection{DNN}
 
 \bibliographystyle{plain}
