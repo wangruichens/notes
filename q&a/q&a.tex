@@ -17,7 +17,29 @@
 Some basic questions worth thinking.
 \end{abstract}
 \noindent
-\paragraph{why L1 regulation generates sparsity?}~{}
+\paragraph{why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
+
+Firstly, why do we want the result matrix to be sparse?
+
+Consider 1 million dimension, calculate the inner product between $w$ and $x$ need a lot of computation. If the $w$ can be sparse, the inner product will only be performed on the non-zero columns.
+
+Or consider another situation, in some scenario, there are free data and many features, which is often called as \textbf{`small n, large p problem'}. If $n \ll p $, then our model will be very complex, our $w$ will be a singular matrix ($|w|=0$). In other words, \textbf{overfitting}.
+
+One way to control overfitting is adding a regularization term to the loss function. Rigde  ($l_{2} norm$) and LASSO ($l_{1} norm$) regression are two very common regression ways.
+$$J(w)=Loss(x)+\lambda ||w||_{2}^{2}$$
+$$J(w)=Loss(x)+\lambda ||w||_{1}$$
+Those target function can also be denoted as :
+
+
+Back to the problem, intuitivly, the target loss will alway intersect at the coordinate axis when using l1 norm. Imaging high dimension situation, the angles will certainly more likely to be intersected, while the ball will not.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3.5in,height=1.7in]{l1l2}
+\caption{L1 and L2 norm.}
+\end{figure}
+
 \paragraph{why L2 regulation cause blur?}~{}
 \paragraph{one-hot encoding for gbdt?}~{}
 \paragraph{xgboost vs gbdt?}~{}
