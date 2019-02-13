@@ -44,9 +44,23 @@ For more math proof, see http://freemind.pluskid.org/machine-learning/sparsity-a
 
 \paragraph{2. Why L2 regulation cause blur?}~{}
 
-In generative models, eg.VAE, L2 norm / L2 loss / MSE tend to yield blurry images.  
+In generative models, eg.VAE, L2 norm / L2 loss / MSE tend to yield blurry images. We try to explain this in probabilistic settings. In Gaussian distribution, it defines as :
+$$p(x|\mu,\sigma^{2})=\frac{1}{Z}exp\left( -\frac{||\mu-x||^{2}}{2\sigma^{2}}\right)$$
+$$logp(x|\mu,\sigma^{2}) \propto exp\left(-\frac{1}{2}||x_{\mu}-x||^{2}  \right)$$
+As we can see, minimizing MSE, is same as maximizing the log likelihood of gaussian, we make the assumption that our $x$ comes from a gaussian.
 
-\paragraph{one-hot encoding for gbdt?}~{}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3in,height=1.7in]{l2}
+\caption{Gaussian and multinomial.}
+\end{figure}
+
+In reality, there often many hidden variables (multinomial) controls the $x$. A simple example, we have white and black dogs as dataset $x$. maximizing the likelihood will blur the two and generate gray dogs.
+
+\paragraph{3. One-hot encoding for gbdt?}~{}
+
+
 \paragraph{xgboost vs gbdt?}~{}
 \paragraph{xgboost vs gbdt prevent overfitting}~{}
 \paragraph{bagging vs boosting}~{}
