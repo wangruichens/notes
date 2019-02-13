@@ -40,7 +40,7 @@ Back to the problem, intuitivly, the target loss will alway intersect at the coo
 \caption{L1 and L2 norm.}
 \end{figure}
 
-For more math proof, see http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization
+For more math proof, see \textit{http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization}
 
 \paragraph{2. Why L2 regulation cause blur?}~{}
 
@@ -60,15 +60,30 @@ In reality, there often many hidden variables (multinomial) controls the $x$. A 
 
 \paragraph{3. One-hot encoding for gbdt?}~{}
 
+It is often the case that we have continuous and categorical features. One-hot encoding may produce very sparse variables. Tree based algorithm tries to increase information gain on the data it`s splitting at any given level. If the data is very sparse, the one-hot encoded feature may be ignored as they are far too sparse. 
 
-\paragraph{xgboost vs gbdt?}~{}
+\textit{Then how to using categorical features  in trees?} 
+
+In xgboost \cite{DBLP:conf/kdd/ChenG16}, it treat every input as numerical, It may be helpful is the categories as small. Otherwise, it may downgrade the performance. 
+
+In lightGBM, it said that a tree built on one-hot features tends to be unbalanced and needs to grow very deep to achieve good accuracy. It`s automaticly provide a optimal solution $O(k*logk)$ to find the best optimal partition. This often performs better than one-hot encoding. 
+
+For more info, see lightgbm api.
+
+\paragraph{xgboost, lightGBM, gbdt, GBM?}~{}
+
+Gradient tree boosting is also known as gradient boosting machine (GBM) or gradient boosted regression tree (GBRT). 
+for detail see pdf in ml papers basis.
+
 \paragraph{xgboost vs gbdt prevent overfitting}~{}
-\paragraph{bagging vs boosting}~{}
-\paragraph{xgboost vs lightgbm}~{}
+\paragraph{bagging vs boosting vs stacking}~{}
 \paragraph{xgb rf lr difference}~{}
 \paragraph{user-cf item-cf difference and application scenarios}~{}
 \paragraph{svm vs lr}~{}
 \paragraph{lstm vs gru}~{}
+
+\bibliographystyle{plain}
+\bibliography{ref}
 \end{document}
 
 
