@@ -17,7 +17,7 @@
 Some basic questions worth thinking.
 \end{abstract}
 \noindent
-\paragraph{why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
+\paragraph{1. Why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
 
 Firstly, why do we want the result matrix to be sparse?
 
@@ -28,11 +28,11 @@ Or consider another situation, in some scenario, there are free data and many fe
 One way to control overfitting is adding a regularization term to the loss function. Rigde  ($l_{2} norm$) and LASSO ($l_{1} norm$) regression are two very common regression ways.
 $$J(w)=Loss(x)+\lambda ||w||_{2}^{2}$$
 $$J(w)=Loss(x)+\lambda ||w||_{1}$$
-Those target function can also be denoted as :
-
+Assume we use loss using MSE, the target function can also be denoted as :
+$$ \mathop{\min}_{w} \frac{1}{n}||y-Xw||^{2} \quad  s.t. \lambda ||w||_{2}^{2} \leq C $$
+$$ \mathop{\min}_{w} \frac{1}{n}||y-Xw||^{2} \quad  s.t. \lambda ||w||_{1} \leq C $$
 
 Back to the problem, intuitivly, the target loss will alway intersect at the coordinate axis when using l1 norm. Imaging high dimension situation, the angles will certainly more likely to be intersected, while the ball will not.
-
 
 \begin{figure}[H]
 \centering
@@ -40,7 +40,12 @@ Back to the problem, intuitivly, the target loss will alway intersect at the coo
 \caption{L1 and L2 norm.}
 \end{figure}
 
-\paragraph{why L2 regulation cause blur?}~{}
+For more math proof, see http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization
+
+\paragraph{2. Why L2 regulation cause blur?}~{}
+
+In generative models, eg.VAE, L2 norm / L2 loss / MSE tend to yield blurry images.  
+
 \paragraph{one-hot encoding for gbdt?}~{}
 \paragraph{xgboost vs gbdt?}~{}
 \paragraph{xgboost vs gbdt prevent overfitting}~{}
