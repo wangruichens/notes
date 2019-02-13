@@ -17,7 +17,7 @@
 Some basic questions worth thinking.
 \end{abstract}
 \noindent
-\paragraph{1. Why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
+\paragraph{Why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
 
 Firstly, why do we want the result matrix to be sparse?
 
@@ -42,7 +42,7 @@ Back to the problem, intuitivly, the target loss will alway intersect at the coo
 
 For more math proof, see \textit{http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization}
 
-\paragraph{2. Why L2 regulation cause blur?}~{}
+\paragraph{Why L2 regulation cause blur?}~{}
 
 In generative models, eg.VAE, L2 norm / L2 loss / MSE tend to yield blurry images. We try to explain this in probabilistic settings. In Gaussian distribution, it defines as :
 $$p(x|\mu,\sigma^{2})=\frac{1}{Z}exp\left( -\frac{||\mu-x||^{2}}{2\sigma^{2}}\right)$$
@@ -58,7 +58,7 @@ As we can see, minimizing MSE, is same as maximizing the log likelihood of gauss
 
 In reality, there often many hidden variables (multinomial) controls the $x$. A simple example, we have white and black dogs as dataset $x$. maximizing the likelihood will blur the two and generate gray dogs.
 
-\paragraph{3. One-hot encoding for gbdt?}~{}
+\paragraph{One-hot encoding for gbdt?}~{}
 
 It is often the case that we have continuous and categorical features. One-hot encoding may produce very sparse variables. Tree based algorithm tries to increase information gain on the data it`s splitting at any given level. If the data is very sparse, the one-hot encoded feature may be ignored as they are far too sparse. 
 
@@ -73,10 +73,22 @@ For more info, see lightgbm api.
 \paragraph{xgboost, lightGBM, gbdt, GBM?}~{}
 
 Gradient tree boosting is also known as gradient boosting machine (GBM) or gradient boosted regression tree (GBRT). 
+
+\textbf{xgboost} using taylor expansion to approximate the objective function. Regularization is defined as number of leafs plus l2 norm of leaf values.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=4in,height=1.5in]{taylor}
+\caption{}
+\end{figure}
+
 for detail see pdf in ml papers basis.
 
-\paragraph{xgboost vs gbdt prevent overfitting}~{}
+\textbf{lightgbm} choose the leaf with max delta loss to grow(leaf wise, best first), while most tree grow by level wise. Using max depth to control overfitting.
+
 \paragraph{bagging vs boosting vs stacking}~{}
+
+bagging Bootstrap Aggregating 
 \paragraph{xgb rf lr difference}~{}
 \paragraph{user-cf item-cf difference and application scenarios}~{}
 \paragraph{svm vs lr}~{}
