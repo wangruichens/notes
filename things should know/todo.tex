@@ -13,16 +13,42 @@
 
 \begin{document}
 \maketitle
-\begin{abstract}
-Some basic questions worth thinking.
-\end{abstract}
-\noindent
-\paragraph{Things you should know...}~{}
-
-C4.5, ID3, CART, K-means, SVM, Kernel function, SMO, EM, Naive bayes, Variational inference, PageRank, Adaboost, KNN,  Linear regression, Logistic regression, LDA, PCA, Random Forest, Bagging \& stacking, Softmax, GBDT, Xgboost, LightGBM, PCA, Max-entorpy, Gradient diminishing, FM, LFM, MF, SVD, SVD++, Simhash, Max likelihood, ALS, L1 norm, L2 norm, Discriminate \& Generative model, Entorpy, Cross-entropy, KL divergence, SGD, BGD, MBGD, Adam, Newton's method, Unbiased estimator, F1 score, Recall, Prercision, AUC, ROC, Cross validation, Bias-Variance tradeoff, Loss function, Overfitting \& underfitting, DBSCAN, TF-IDF, Text rank, Word2vec, Glove, Fast-text, Collaborative Filtering, User-cf, Item-cf, Dropout, Batch norm, Maxpooling, Avg pooling, Global avg pooling, Respective field, LR normalization, Online learning, FTRL, FOBOS, RDA, Tree row \& column sampling,  ANN, Tree normalization, RNN, LSTM, GRU, CRF, RNN \& CNN, KDtree, Resnet, Seq2seq, Deep wise CNN, 1X1 kernel, SVM multi-classification, Attention, Conv complexity, Pearson correlation, Gibbs sampling.
 
 
-\paragraph{Why L1 regulation generates sparsity? L2 regulation cause blur?}~{}
+\centerline{\textbf{Some Basics}}
+
+C4.5, ID3, CART, K-means, SVM, Kernel function, SMO, EM, Naive bayes, Variational inference, PageRank, Adaboost, KNN, Data cleaning, Linear regression, Logistic regression, LDA, PCA, Random Forest, Bagging \& stacking, Softmax, GBDT, Xgboost, LightGBM, PCA, Max-entorpy, Gradient diminishing, FM, LFM, MF, SVD, SVD++, Simhash, Max likelihood, ALS, L1 norm, L2 norm, Discriminate \& Generative model, Entorpy, Cross-entropy, KL divergence, SGD, BGD, MBGD, Adam, Newton's method, Unbiased estimator, F1 score, Recall, Prercision, AUC, ROC, Cross validation, Bias-Variance tradeoff, Loss function, Overfitting \& underfitting, DBSCAN, TF-IDF, Text rank, Word2vec, Glove, Fast-text, Collaborative Filtering, User-cf, Item-cf, Dropout, Batch norm, Maxpooling, Avg pooling, Global avg pooling, Respective field, LR normalization, Online learning, FTRL, FOBOS, RDA, Tree row \& column sampling,  ANN, Tree normalization, RNN, LSTM, GRU, CRF, RNN \& CNN, KDtree, Resnet, Seq2seq, Deep wise CNN, 1X1 kernel, SVM multi-classification, Attention, Conv complexity, Pearson correlation, Gibbs sampling.
+\centerline{\rule{\textwidth}{1pt}}
+
+\section{ID3, C4.5, CART difference?}
+What is Decision Tree (DT)? \\
+DTs are non parametric superivised learning method, can be used for classification and regression. DTs need little data preparation. No need NOrmalization. White box model. Easily overfitting, sensitive to variation, because may build complete different trees, can be mitigated by using ensemble. Based on greedy opt to solve NP-complete problem, may reach local optimal. Need balance dataset. \\
+\begin{figure}[H]
+\centering
+\includegraphics[width=4in,height=3in]{dt}
+\caption{A decision tree using gini.}
+\end{figure} 
+
+Pratical Tips:
+\begin{itemize}
+\item DT tend overfit if using a large number of features, Using a ratio to sample the features.
+\item Consider perform feature dimensionality reduction (PCA, Feature selection).
+\item Control max depth, control min samples per leaf to prevent overfitting
+\end{itemize}
+ID3 (info gain) \\
+\textbf{Entropy $H(S)$} is a measure of uncertainty of data. 
+$$H(S)=\sum_{x \in S}-p(x)logp(x)$$
+\textbf{Information Gain $IG(S)$} is a measure of differenece in entropy before and after $S$ splited on attribute A.
+$$IG(S,A)=H(S)-\sum_{t \in A}p(t)H(t)=H(S)-H(S|A)$$
+C4.5 (gain ratio)
+C4.5 is the successor to ID3. Can handle continuous attribute.
+$$GainRatio(S,A)=\frac{IG(S,A)}{IV(A)}$$
+CART(Gini impurity)
+CART using binary split, Split based on one variable. Pruning mainly has two types : pre and post. CART use CCP (cost complexity pruning), which is defined by $\frac{error rate}{tree complexity}$
+$$Gini(A,S)=1-\sum_{t \in A} p_{t}^{2}$$
+
+
+\section{Why L1 regulation generates sparsity? L2 regulation cause blur?}
 
 Firstly, why do we want the result matrix to be sparse?
 
@@ -47,7 +73,7 @@ Back to the problem, intuitivly, the target loss will alway intersect at the coo
 
 For more math proof, see \textit{http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization}
 
-\paragraph{Why L2 regulation cause blur?}~{}
+\paragraph{Why L2 regulation cause blur?}
 
 In generative models, eg.VAE, L2 norm / L2 loss / MSE tend to yield blurry images. We try to explain this in probabilistic settings. In Gaussian distribution, it defines as :
 $$p(x|\mu,\sigma^{2})=\frac{1}{Z}exp\left( -\frac{||\mu-x||^{2}}{2\sigma^{2}}\right)$$
@@ -63,7 +89,7 @@ As we can see, minimizing MSE, is same as maximizing the log likelihood of gauss
 
 In reality, there often many hidden variables (multinomial) controls the $x$. A simple example, we have white and black dogs as dataset $x$. maximizing the likelihood will blur the two and generate gray dogs.
 
-\paragraph{One-hot encoding for gbdt?}~{}
+\section{One-hot encoding for gbdt?}
 
 It is often the case that we have continuous and categorical features. One-hot encoding may produce very sparse variables. Tree based algorithm tries to increase information gain on the data it`s splitting at any given level. If the data is very sparse, the one-hot encoded feature may be ignored as they are far too sparse. 
 
@@ -75,7 +101,7 @@ In lightGBM, it said that a tree built on one-hot features tends to be unbalance
 
 For more info, see lightgbm api.
 
-\paragraph{xgboost, lightGBM, gbdt, GBM?}~{}
+\section{xgboost, lightGBM, gbdt, GBM?}
 
 Gradient tree boosting is also known as gradient boosting machine (GBM) or gradient boosted regression tree (GBRT). 
 
@@ -91,13 +117,19 @@ for detail see pdf in ml papers basis.
 
 \textbf{lightgbm} choose the leaf with max delta loss to grow(leaf wise, best first), while most tree grow by level wise. Using max depth to control overfitting.
 
-\paragraph{bagging vs boosting vs stacking}~{}
+\section{GD, BGD, SGD, momentum, adagrad, adam}
+GD refers to gradient descent, Using to negative gradient to optimize the ojbective function.
+Batch gradient descent (BGD) computes the gradient on the whole dataset, which if often slow and intractable. Can not be applied to online model which data is on the fly. 
+$$\theta=\theta - \eta \cdot \nabla_{\theta} J(\theta)$$
+BGD guaranteed to converge to the global minimum for convex problem.
 
-bagging Bootstrap Aggregating 
-\paragraph{xgb rf lr difference}~{}
-\paragraph{user-cf item-cf difference and application scenarios}~{}
-\paragraph{svm vs lr}~{}
-\paragraph{lstm vs gru}~{}
+SGD perform an update for each training example. Usually slowly decrease the learning rate.
+$$\theta=\theta - \eta \cdot \nabla_{\theta} J(\theta; x^{i};y^{i})$$
+
+Mini-batch gradient descent perform an update for every mini batch of $n$ train examples. 
+
+Momentum adagrad,adam, rmsprop etc are all opt strategy.
+
 
 \bibliographystyle{plain}
 \bibliography{ref}
