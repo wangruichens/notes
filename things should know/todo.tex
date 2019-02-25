@@ -131,6 +131,30 @@ Mini-batch gradient descent perform an update for every mini batch of $n$ train 
 
 Momentum adagrad,adam, rmsprop etc are all opt strategy.
 
+\section{EM Algorithm and VI}
+In the topic of clustering, it can be classified as hard and soft clustering. EM is a soft clustering method which is a generative model which trys calculate parameters of probability distribution. 
+EM algorithm is used for maximum likelihood estimates of parameters. In bayesian statistics, it is often used to obtain the mode of the posterior marginal distributions of parameters.
+
+\textbf{E-step} computes the expected value of $l(\theta;X,Z)$ given the observed data $X$, and current estimate $\theta_{old}$.
+
+\begin{align*}
+Q(Z;\theta_{old}) &= P(Z| X,\theta_{old})
+\end{align*}
+
+\textbf{M-step} maximizing over $\theta$ the expectation computed.
+\begin{align*}
+\theta_{new} :&= \mathop{\arg\max}_{\theta} -KL(Q(Z) || P(Z|X,\theta)) \\
+&= \mathop{\arg\max}_{\theta} \sum_{i}\sum_{z^{i}} Q_{i}(z^{i})log \frac{p(x^{i},z^{i};\theta)}{Q_{i}(z^{i})}
+\end{align*}
+
+In variational inference, we know that 
+$$logp(x)=KL(q(z)||p(z|x))+(E_{q}[logp(z,x)]-E_{q}[logq(z)])$$
+The difference of EM and VB is the kind of results they provide: \textbf{EM is just a point, VB is a distribution}. However, they also have similarities. EM and VB can both be interpreted as minimizing some sort of distance between the true value and our estimate, which is the Kullback-Leibler divergence. \\
+For example:
+
+When the Gaussian model involves latent variables and parameters only, Expectation Maximization is enough to solve the model. 
+
+If, on top of the latent variables, the parameters becomes random with prior distributions, the Variational Inference (or Variational Bayes) method is used.
 
 \bibliographystyle{plain}
 \bibliography{ref}
