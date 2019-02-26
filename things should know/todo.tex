@@ -13,11 +13,8 @@
 
 \begin{document}
 \maketitle
-
-
 \centerline{\textbf{Some Basics}}
-
-C4.5, ID3, CART, K-means, SVM, Kernel function, SMO, EM, Naive bayes, Variational inference, PageRank, Adaboost, KNN, Data cleaning, Linear regression, Logistic regression, LDA, PCA, Random Forest, Bagging \& stacking, Softmax, GBDT, Xgboost, LightGBM, PCA, Max-entorpy, Gradient diminishing, FM, LFM, MF, SVD, SVD++, Simhash, Max likelihood, ALS, L1 norm, L2 norm, Discriminate \& Generative model, Entorpy, Cross-entropy, KL divergence, SGD, BGD, MBGD, Adam, Newton's method, Unbiased estimator, F1 score, Recall, Prercision, AUC, ROC, Cross validation, Bias-Variance tradeoff, Loss function, Overfitting \& underfitting, DBSCAN, TF-IDF, Text rank, Word2vec, Glove, Fast-text, Collaborative Filtering, User-cf, Item-cf, Dropout, Batch norm, Maxpooling, Avg pooling, Global avg pooling, Respective field, LR normalization, Online learning, FTRL, FOBOS, RDA, Tree row \& column sampling,  ANN, Tree normalization, RNN, LSTM, GRU, CRF, RNN \& CNN, KDtree, Resnet, Seq2seq, Deep wise CNN, 1X1 kernel, SVM multi-classification, Attention, Conv complexity, Pearson correlation, Gibbs sampling, t-SNE.
+C4.5, ID3, CART, K-means, SVM, Kernel function, SMO, EM, Naive bayes, Variational inference, PageRank, Adaboost, KNN, Data cleaning, Linear regression, Logistic regression, LDA, PCA, Random Forest, Bagging \& stacking, Softmax, GBDT, Xgboost, LightGBM, PCA, Max-entorpy, Gradient diminishing, FM, LFM, MF, SVD, SVD++, Simhash, Max likelihood, ALS, L1 norm, L2 norm, Discriminate \& Generative model, Entorpy, Cross-entropy, KL divergence, SGD, BGD, MBGD, Adam, Newton's method, Unbiased estimator, F1 score, Recall, Prercision, AUC, ROC, Cross validation, Bias-Variance tradeoff, Loss function, Overfitting \& underfitting, DBSCAN, TF-IDF, Text rank, Word2vec, Glove, Fast-text, Collaborative Filtering, User-cf, Item-cf, Dropout, Batch norm, Maxpooling, Avg pooling, Global avg pooling, Respective field, LR normalization, Online learning, FTRL, FOBOS, RDA, Tree row \& column sampling,  ANN, Tree normalization, RNN, LSTM, GRU, CRF, RNN \& CNN, KDtree, Resnet, Seq2seq, Deep wise CNN, 1X1 kernel, SVM multi-classification, Attention, Conv complexity, Pearson correlation, Gibbs sampling, t-SNE, Learning to Rank, mAP, NDCG.
 
 \centerline{\rule{\textwidth}{1pt}}
 
@@ -156,14 +153,79 @@ When the Gaussian model involves latent variables and parameters only, Expectati
 
 If, on top of the latent variables, the parameters becomes random with prior distributions, the Variational Inference (or Variational Bayes) method is used.
 
+\section{Precision and Recall and F-measure and mAP}
+
+\textbf{Accuracy}
+\textbf{Precision}
+\begin{itemize}
+\item Meaningless, most case 99\% documents are none-relevant
+\end{itemize}
+$$Accuracy=\frac{TP+TN}{N}$$
+
+\textbf{Precision}
+\begin{itemize}
+\item Intuition: how much junk did we give to the user ?
+\end{itemize}
+$$Precision=\frac{TP}{TP+FP}$$
+
+\textbf{Recall}
+\begin{itemize}
+\item Intuition: how much good stuff did we miss ?
+\end{itemize}
+$$Recall=\frac{TP}{TP+FN}$$
+
+\textbf{F-measure}
+\begin{itemize}
+\item Intuition: combine recall and precision
+\end{itemize}
+$$F_{\beta}=\frac{(\beta^{2}+1) \cdot P \cdot R}{\beta^{2}P+R}$$
+$$F_{1}=\frac{2 \cdot P \cdot R}{P+R}$$
+
+However, all of this may be misleading. They could be the same system.
+\begin{figure}[H]
+\centering
+\includegraphics[width=5in,height=1in]{eval}
+\caption{Same system, different score}
+\end{figure}
+
+Relationship between Recall/Precision/F1 in ranking:
+\begin{figure}[H]
+\centering
+\includegraphics[width=4.5in,height=3in]{rank1}
+\caption{Same system, different score}
+\end{figure}
+
+\textbf{Mean Average Precision}
+\begin{itemize}
+\item Assume user wants to find many relevant docs
+\item biased towards top of the ranking (related with NDCG)
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=5in,height=3in]{map}
+\caption{mean average precision}
+\end{figure}
+
+\textbf{Normalized Discounted Cumulative Gain (NDCG)}
+
+When we want none-binary metrics.
+$$DCG_{k}=\sum_{r=1}^{k}\frac{rel_{r}}{log(r+1)}$$
+
+\section{Learning to Rank}
+\noindent
+Pointwise
+\\
+Pairwise
+\begin{itemize}
+\item RankNet, RankSVM, RankBoost, GBRank
+\end{itemize}
+Listwise
+\begin{itemize}
+\item AdaRank, SoftRank, SVM-MAP, lambdaRank, lambdaMART
+\end{itemize}
 \bibliographystyle{plain}
 \bibliography{ref}
 \end{document}
-
-
-
-
-
 
 
 
