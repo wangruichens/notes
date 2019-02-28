@@ -6,7 +6,7 @@ My notes written in Latex. 赞美Latex!~
 
 [variational Inference](https://github.com/wangruichens/notes/blob/master/variational%20inference/Starting%20from%20Information.pdf)
 
-[variational auto encoder](https://github.com/wangruichens/notes/tree/master/variational%20autoencoder)
+[variational auto encoder](https://github.com/wangruichens/notes/blob/master/variational%20autoencoder/variational%20auto-encoder.pdf)
 
 [ad click prediction](https://github.com/wangruichens/notes/blob/master/ad%20click%20prediction/ad%20click%20prediction.pdf)
 
