@@ -2,7 +2,7 @@
 My notes written in Latex. 赞美Latex!~
 
 
-[things should know](https://github.com/wangruichens/notes/blob/master/things%20should%20know/todo.pdf)
+[basis](https://github.com/wangruichens/notes/blob/master/basis/basis.pdf)
 
 [variational Inference](https://github.com/wangruichens/notes/blob/master/variational%20inference/Starting%20from%20Information.pdf)
 
