@@ -1,5 +1,5 @@
 # Notes
-My notes written in Latex.
+My notes.
 
 
 [basis](https://github.com/wangruichens/notes/blob/master/basis/basis.pdf)
