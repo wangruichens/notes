@@ -126,9 +126,9 @@ DeepFM\cite{DBLP:journals/corr/GuoTYLH17} 是一种结合深度学习DNN与FM的
 
 通常我们在整理特征时，常采用one-hot来进行编码，这样做在DNN中有什么问题？
 
-在离散特征很稀疏时，常常向量维度比较大，concate到一起后，输入层的长度也会很大。比如输入层有100w的节点，通过FC layer之后变成500个节点。模型需要计算5亿个参数，这样做是不可行的。如何解决呢？ 结合分治的思想，先把每一个field都由稀疏向量转为稠密。也就是DeepFM中的Dense embeddings.
+在离散特征很稀疏时，常常向量维度比较大，concate到一起后，输入层的长度也会很大。比如输入层有100w的节点，通过FC layer之后变成500个节点。模型需要计算5亿个参数，这样做往往是不可行的。如何解决呢？结合分治的思想，先把每一个field都由稀疏向量转为稠密。也就是DeepFM中的Dense embeddings.
 
-研究表明，单纯的MLP表达特征组合的能力很弱，我们希望能够把低阶的特征单独建模。也就是并行的融合高阶与低阶的特征。像Deep \& wide 中就采用了LR与DNN的组合，Wide 部分的LR以手工特征为输入。 DeepFM到这里也就几乎呼之欲出了： 把LR模块替换成FM,就是DeepFM模型。
+一般来说，单纯的MLP表达低阶特征组合的能力很弱，我们希望能够把低阶的特征单独建模。也就是并行的融合高阶与低阶的特征。像Deep \& wide 中就采用了LR与DNN的组合，Wide部分的采用LR，以手工特征为输入。 那么我们的DeepFM到这里也就呼之欲出了： 把LR模块替换成FM,就是DeepFM模型。
 $$\widehat{y}=\sigma(y_{FM}+y_{DNN})$$
 $$y_{FM}=<w,x>+\sum_{i=1}^{n}\sum_{j=i+1}^{n}\langle \textbf{v}_{i} ,\textbf{v}_{j} \rangle x_{i}x_{j}$$
 
