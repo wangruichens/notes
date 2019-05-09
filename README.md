@@ -20,6 +20,9 @@ GAN和相关变种，兴趣随机更新
 第一个中文笔记，以后都用中文来写吧，看起来更亲切。主要为了组内分享，FM和推荐系统相关内容
 [FM](https://github.com/wangruichens/notes/blob/master/fm/fm.pdf)
 
+分布式深度学习 在spark上优雅地应用tensorflow
+[tensorflow+spark](https://github.com/wangruichens/notes/blob/master/tensorflow%20spark%20connector/tensorflow%20spark%20connector.pdf)
+
 #
 
 [素数](https://github.com/wangruichens/notes/blob/master/prime%20number/prime.pdf)
