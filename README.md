@@ -29,7 +29,6 @@ GAN和相关变种，兴趣随机更新
 [tensorflow+spark](https://github.com/wangruichens/notes/blob/master/tensorflow%20spark%20connector/tensorflow%20spark%20connector.pdf)
 分布式深度学习 在spark上优雅地应用tensorflow
 
-#
 
 [素数](https://github.com/wangruichens/notes/blob/master/prime%20number/prime.pdf)
 素数相关推论和猜想，机器学习拟合demo
