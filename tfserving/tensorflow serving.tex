@@ -163,8 +163,9 @@ docker pull tensorflow/serving
 \paragraph{gPRC}
 在实际应用中，如果特征维度比较高，或者是直接传输图像数据，这时候数据量一般比较大，进行json转化会比较耗时，拼接成的字符串也会较大，传输时间往往会是瓶颈。这时候就可以考虑使用grpc调用。一般情况下，同样的数据，使用grpc实际传输字节只有json的一半，配合serialize example格式，模型预测速度也有3倍左右的提高。
 
-在模型serving的时候，可以同时对外提供grpc和rest接口，客户端可以根据应用需要选择对应的接口。
+在用docker模型serving的时候，可以同时对外映射模型的grpc和rest接口，客户端可以根据应用需要选择对应的接口。
 
+\paragraph{性能比较：}
 \begin{itemize}
 \item REST (serialized once)
 \begin{itemize}
@@ -180,6 +181,12 @@ docker pull tensorflow/serving
 
 \begin{figure}[H]
 \centering
+\includegraphics[width=4in,height=2.0in]{grpcdeepfm}
+\caption{grpc deepfm speed test}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=6in,height=3.0in]{grpcclient}
 \caption{grpc client demo}
 \end{figure}
@@ -188,10 +195,9 @@ docker pull tensorflow/serving
 \section{版本切换warmup}
 tf serving在模型版本切换的时候，初始的几个case响应时间会明显高于正常水平。这种情况主要是因为tensorflow 运行时采用 lazily initialization的方式。 tensorflow可以自定义warm up request。保存一个用于warmup的tfrecords。 这样每次模型加载的时候，会先调用tfrecords里的样本先做几次预测，初始化相关组件。
 
-\section{demo示例}
-
-\section{问题}
-
+\section{demo相关代码}
+ha05/home/wangrc/demo/ 
+\section{答疑}
 
 \end{CJK*}
 \end{document}
