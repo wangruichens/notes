@@ -9,8 +9,13 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{CJKutf8}
+\usepackage[CJKbookmarks]{hyperref}
+\usepackage{color}
+\usepackage{listings}
 \author{Ruichen Wang}
 \title{Basis}
+
+
 
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
@@ -262,9 +267,25 @@ Same mathematics as above, we finally get:
 $$L(w,b,\alpha)=\sum \alpha_{i}-\frac{1}{2}\sum \alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}^{T}x_{j}$$
 $$s.t.,  0 \leq \alpha_{i} \leq C, \sum \alpha_{i}y_{i}=0 $$
 Note the only difference now is that $\alpha$ has a upper limit $C$. 
+
+\section{推荐与排序}
+虽然都是重排序，但搜索和推荐的场景是有很大区别的。
+
+从用户的角度来看，搜索场景中用户的查询需求是显式的、唯一的，对结果有几乎确定的期望（所以搜索引擎都在追求转型问答引擎）。而在推荐场景中，用户的需求没有明确给定，需要系统去推断用户的兴趣，这里用户的兴趣需求是隐式的、多元的。这就决定了两种场景下优化目标函数的不同，前者关注的是搜索结果与显式查询需求的相关性，后者关注的则是推荐内容与用户隐式且多元的兴趣分布的契合度。
+
+从业务的角度来看，搜索场景希望用户停留时间越短越好，点击越少越好；推荐场景则希望用户停留时间越长越好，点击越多越好。这就决定了优化思路的不同，前者的目的是找到最优的若干条结果，最好是第一条就是用户想要的答案（一般不超过10，很少有用户在使用搜索引擎的时候会点击下一页）；而后者的目的是找到用户最喜欢的若干条新闻或物品，最好推荐的每一条新闻、每一件商品用户都喜欢。要想让用户都点击，那就不仅要符合用户兴趣，还必须具有一定的差异性和多样性，满足用户多元化的兴趣需求，而不能让某一类内容扎堆出现。所以前者是一个序列优化问题，而后者则是一个组合优化问题。
+
+举个栗子。
+
+女票说，我想吃苹果。那你就去买苹果，红的、大的、甜的、好吃的，一个就好。多了不要，香蕉不要，橘子不要，榴莲也不要。just follow the order，不要问东问西，不要画蛇添足。这是搜索。
+
+女票啥也不说，但你知道女票喜欢吃苹果、香蕉、柚子、栗子（咦？栗子好像不是水果？管它呢，女票喜欢吃就好）、猕猴桃…… 那你就给她上一个大果盘吧，苹果香蕉切了片，柚子栗子去了皮，猕猴桃最好配点酸奶。你会想早上女票刚刚吃了两个大苹果，那就把苹果换成榴莲吧。你还会想大家都说这个季节的葡萄也很好吃，要不也放三两颗给女票尝尝？让用户不用动脑子，所见全是喜欢的，一块不剩吃个精光。这是推荐。
+
+
 \bibliographystyle{plain}
 \bibliography{ref}
 
+\newpage
 \end{CJK*}
 \end{document}
 
