@@ -1,6 +1,8 @@
 # Notes
 My notes.
 
+[BERT](bert)
+
 [Transformer](transformer)
 
 [basis](https://github.com/wangruichens/notes/blob/master/basis/basis.pdf)
