@@ -1,6 +1,8 @@
 # Notes
 My notes.
 
+[Evaluate Metrics](evaluate_metrics)
+
 [BERT](bert)
 
 [Transformer](transformer)
