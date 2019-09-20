@@ -5,8 +5,8 @@
 一般常见的模型评估指标有 logloss, RMSE, auc, accuracy, precision, recall, F1 score 等等。
 
 
-> - [Loss vs. AUC](#Loss-vs.-AUC)
-> - [Is overfitting always bad ? ](#Is-overfitting-always-bad-?)
+> - [Loss vs. AUC](#loss-vs-auc)
+> - [Is overfitting always bad ? ](#is-overfitting-always-bad-)
 
 
 
