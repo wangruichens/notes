@@ -1,6 +1,6 @@
 # Evaluate Metrics
 
-### 掺杂一些个人理解，欢迎讨论
+### 个人理解，欢迎讨论
 
 一般常见的模型评估指标有 logloss, RMSE, auc, accuracy, precision, recall, F1 score 等等。
 
@@ -8,6 +8,7 @@
 > - [Loss vs. AUC](#loss-vs-auc)
 > - [Is overfitting always bad?](#is-overfitting-always-bad)
 > - [Cross validation and overfitting](#cross-validation-and-overfitting)
+
 
 
 # Possible reason for overfitting
@@ -20,7 +21,7 @@ Overfitting一般来说指的是训练中模型memorizes了训练数据，而在
     - Hold out 一部分数据
     - 使用简单模型
     - 使用更多样本
-    - 合并多个模型输出 Bagging(强模型并联，有一定的平滑作用)，Boosting(弱模型串联)
+    - 合并多个模型输出 Bagging(强模型并联，有一定的平滑作用)，Boosting(弱模型串联)。实际上，单个模型都有它的上限，都多多少少会overfitting，常常加入某些特征后效果反而下降，差异化大的多模型集成往往对最后的结果是有帮助的。
     
 - 调参问题
     - 使用test集上最好的参数
@@ -65,6 +66,16 @@ Overfitting一般来说指的是训练中模型memorizes了训练数据，而在
 
 
 # Is overfitting always bad? 
+
+[一个很有意思的问题](https://stats.stackexchange.com/questions/220807/is-overfitted-model-with-higher-auc-on-test-sample-better-than-not-overfitted-on)
+
+这个问题其实很宽泛，跟实际的项目联系得比较紧密。像上一个topic说的，对于不同的应用场景，关注的metric自然也就不一样。比如有时候还需要观察ROC曲线的形状。
+
+上面我举的例子其实在实际中也常会遇到，模型在训练中，train loss越来越小，eval loss越来越大，同时train/eval auc都在提高，这个时候模型已经开始过拟合了。这个时候应该按实际的需求来选择是否继续训练。比如在推荐场景中，更注重的排序的结果。单纯看loss并不是一个合理的指标，有些太形而上学了，从practical的角度来说，一般还是应该选择更高auc的模型。
+
+- 这里我做了一个测试，单纯使用文本特征来拟合target，数据分为三份，train 20w, eval 5w，test 10w。 看起来模型在6k step的时候, eval loss 就已经逐渐变大了。继续训练后，模型其他指标还是明显有提升的。
+![img](isitoverfitting.png)
+
 
 # Cross validation and overfitting
 
