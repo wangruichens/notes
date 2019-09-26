@@ -3,13 +3,25 @@
 ### 个人理解，欢迎讨论
 
 一般常见的模型评估指标有 logloss, RMSE, auc, accuracy, precision, recall, F1 score 等等。
-
-> - [Possible reason for overfitting](#possible-reason-for-overfitting?)
+> - [Basic Concepts](#basic-concepts)
+> - [Possible reason for overfitting](#possible-reason-for-overfitting)
 > - [Loss vs. AUC](#loss-vs-auc)
 > - [Is overfitting always bad?](#is-overfitting-always-bad)
 > - [Cross validation and overfitting](#cross-validation-and-overfitting)
 
+# Basic Concepts
 
+- Accuracy = TP+TN /N
+    - 单纯看这个指标没有什么意义，属于比较脆弱的指标，和样本的分布，阈值的选取关系巨大
+- Precision = TP / TP+FP
+    - 评估模型给出了多少junk。也就是模型认为的正样本中有多少是错误的。
+- Recall = TP / TP+FN
+    - 模型遗漏了多少正样本，也就是how much good stuff did we miss ?
+- F-measure 
+    - F1 = 2xPxR / P+R， 综合考虑Precision和Recall。 
+- ROC AUC
+    - ROC曲线中，横轴是FPR,纵轴是TPR。对应每一个阈值都有一个点。连起来就是ROC曲线。一种说法是如果ROC曲线是光滑的，就没有太大的overfitting。
+    
 
 # Possible reason for overfitting
 
