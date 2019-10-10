@@ -12,6 +12,8 @@
 >> - [Boosting介绍](#boosting)
 >> - [Adaboost](#adaboost)
 >> - [Gradient Boosting](#gradient-boosting)
+>> - [Bias & Variance about Boosting](#bias--variance-about-boosting)
+
 > - [Stacking Methods](#stacking-methods)
 # Basic Concepts
 
@@ -176,6 +178,11 @@ boosting希望每个弱模型尽量不相关。 那么我们必然希望每个�
 
 当然我们的loss函数是可以随便换的，l1/l2, exp, square loss 等等，所以说gradient boosting是泛化的adaboost，
 
+### Bias & Variance about Boosting
+
+准确地说，Bagging是降低variance的，而Boosting是同时降低variance和bias。
+
+boosting是seqentially累加模型，自然就会导致模型之间强相关。套用上面bagging提到的公式，强相关的模型无法显著降低variance。更多的通过调整样本weight，降低bias来提升模型效果。
 
 ## xgboost
 
