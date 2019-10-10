@@ -3,9 +3,16 @@
 > - [Basic Concepts](#basic-concepts)
 > - [Bias Variance Trade-off](#bias-variance-trade-off)
 > - [Bagging Prevents Overfitting](#bagging-prevents-overfitting)
-> - [Bagging Methods](#bagging-methods)
-> - [Boosting Methods](#boosting-methods)
 
+> - [Bagging Methods](#bagging-methods)
+>> - [Boostrap Method (.632自助法)](#boostrap-method-632)
+>> - [Random Forest](#random-forest)
+>> - [Can Random Forest（bagging） Overfit?](#can-random-forestbagging-overfit)
+> - [Boosting Methods](#boosting-methods)
+>> - [Boosting介绍](#boosting)
+>> - [Adaboost](#adaboost)
+>> - [Gradient Boosting](#gradient-boosting)
+> - [Stacking Methods](#stacking-methods)
 # Basic Concepts
 
 Ensemble的主要思想是训练多个模型，分别从不同的角度去解决同一个机器学习任务。一般来说，模型的error主要来自三个方面：variance, bias 和noise。通过ensemble可以提高模型最终的stability，从而一定程度上减少这些error。比较常见的ensemble方法有：
@@ -70,6 +77,8 @@ Ensemble的主要思想是训练多个模型，分别从不同的角度去解决
 
 # Bagging Methods
 
+抽样出多组数据，各自训练强分类器， 各自variance会很大， 然后采用bagging来降低variance。
+
 ## Boostrap Method (.632自助法)
 
 有放回的均匀抽样，针对样本总体无法以正态分布来描述，常采用的方法。
@@ -80,8 +89,10 @@ Boostrap Aggregating 就是将上述方法重复i次，每次都得到一份数�
 
 ## Random Forest
 
+单棵树可以有很好的拟合能力。但是同样会产生较大的方差。Random Forest就是解决这个问题。
+
 算法大概流程：
-- 采样生成一份bootstrap sample data。
+- .632采样生成一份bootstrap sample data。
 - 构造一棵决策树b,直到满足最大节点数（or 每个节点下只有k个sample）:
     - 从总feature p中随机选取一部分变量m (经验上， Classification: &radic;p ， Regression: p/3)
     - 从m个变量中选择最佳变量/分叉点
@@ -90,7 +101,7 @@ Boostrap Aggregating 就是将上述方法重复i次，每次都得到一份数�
 
 与bagging decision tree的区别：random forest每次随机选择特征。往往这样效果比 decision tree刻意选择的效果更好。有更好的泛化能力。
 
-## Does Random Forest Overfit? 
+## Can Random Forest（bagging） Overfit? 
 
 一个有意思的问题： 增加树的个数，最终bagging / random forest模型会不会过拟合？ 
 
@@ -104,15 +115,71 @@ bagging的方法得到的variance可以表达为：
 
 # Boosting Methods
 
-boosting指的是sequential models, 将一系列弱模型串联起来组织一个强模型。所谓弱模型指的是模型slightly better than random guess。最后进行加权投票，weighted majority vote。
+## Boosting介绍
+
+### 强可学习 & 弱可学习
+在概率近似正确（probably approximately correct，PAC）学习框架中：
+- 如果算法正确率很高，强可学习。
+- 如果算法正确率仅比随机猜测略好，弱可学习。
+
+Schapire后来证明了: 强可学习和弱可学习是等价的。 也就是说，在PAC学习的框架下，一个概念是强可学习的 充分必要条件 是这个概念是弱可学习的。
+
+往往一个弱学习的算法更容易实现。 而Boosting就是将多个弱学习分类器组合成一个强学习的方法。
+
+boosting指的是sequential models, 将一系列弱模型（与bagging相反）串联起来组织一个强模型。所谓弱模型指的是模型slightly better than random guess。最后进行加权投票，weighted majority vote。注意boosting是有顺序的，seqentially。不像bagging可以并行训练。
+
+boosting希望每个弱模型尽量不相关。 那么我们必然希望每个模型的训练数据也尽量不同。一种办法就是re-weight。
 
 ## AdaBoost
 
-算法步骤：
+- idea: 
+    - 希望f1训练好后，f2能很好的补充f1的不足。 也就是希望f1在f2的数据上，表现的很差。
+- solution: 
+    - add weight to samples that f1 fails.
+
+### 算法步骤：
 - 初始化样本权重w = 1/N 
 - 对于M个分类器分别：
     - 基于权重训练一个分类器G<sub>m</sub>(x)
     - 计算错误分类的样本数err<sub>m</sub>
-    - 计算 &alpha;<sub>m</sub> = log((1-err<sub>m</sub>)/err<sub>m</sub>)
-    - 更新错误分类的样本权重为w<sub>i</sub>*exp(&alpha;<sub>m</sub>)
-- 最终结果G(x)=sign(&sum; &alpha;G<sub>m</sub>(x))
+    - 计算 &alpha;<sub>m</sub> = log(	
+&radic; (1-err<sub>m</sub>)/err<sub>m</sub>)
+    - 更新错误分类的样本权重为w<sub>i</sub>*exp(&alpha;<sub>m</sub>) (*注意为指数形式)
+- 最终结果G(x)=sign(&sum; &alpha;G<sub>m</sub>(x))。误分类少、表现优秀的模型权重大。
+
+### 为什么使用指数损失？ 
+
+注意adaboost使用的是指数loss。最主要的原因还是为了计算更方便。adaboost是需要累加计算，使用log &alpha; 和指数loss 以后，不再需要做除法，代码实现起来也更方便。 另外对于分错的样本点，权重会指数上升，因而收敛的更快。
+
+![img](img/12.png)
+
+缺点：
+- 对于异常点就会很敏感。因而通常在噪音比较多的数据集上表现不佳。
+- 模型结果无法用于概率估计，这是算法指数loss导致的。
+
+### 不同的loss
+下图可以看出，exp的loss 下降的最快。adaboost有一个很好的性质就是，当模型已经可以在training数据上完全可分时，继续增加弱分类器， 在test集合上仍然可以有更好的表现。这是因为adaboost实际的target在最小化exp那么线的lower bound。SVM就没有这样的性质。
+
+![img](img/13.png)
+
+## Gradient Boosting
+
+可以看成adaboosing一个泛化的方法。从梯数的思路去解决这个问题。
+
+### 算法步骤：
+- 假设我们已经有一个累加分类器G<sub>t-1</sub>(x)
+- 找到一个新的f<sub>t</sub>, &alpha; <sub>t</sub>, 使G<sub>t</sub> = G<sub>t-1</sub> + &alpha; <sub>t</sub>f<sub>t</sub>
+- 最小化loss = &sum;exp(-yG<sub>t</sub>), G<sub>t-1</sub>已知。对loss求G<sub>t</sub>的导来得到。 由步骤2得， G<sub>t</sub>导数的方向就是 &alpha; <sub>t</sub>f<sub>t</sub>，向量同方向也就是乘积最大。 也就等价于向量f 最大化 exp(-yG<sub>t-1</sub>)
+    - *到此就和adaboost的想法一致了，其实就是同理的。（新的模型要让之前模型的表现尽量差）
+- 确定f之后再确定 &alpha;。固定f求导解G<sub>t</sub>使得loss最小。解出来的&alpha; = log(	&radic; (1-err<sub>m</sub>)/err<sub>m</sub>) 
+    - *与adaboost完全相同
+
+当然我们的loss函数是可以随便换的，l1/l2, exp, square loss 等等，所以说gradient boosting是泛化的adaboost，
+
+
+## xgboost
+
+
+# Stacking Methods
+
+将几个模型结果作为input feature。再加上一层LR。为了防止有的模型作弊（过拟合、欠拟合etc）, 需要将训练数据再单独保存一份来训练LR。

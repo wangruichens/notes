@@ -81,7 +81,7 @@ Overfitting一般来说指的是训练中模型memorizes了训练数据，而在
 
 [一个很有意思的问题](https://stats.stackexchange.com/questions/220807/is-overfitted-model-with-higher-auc-on-test-sample-better-than-not-overfitted-on)
 
-这个问题其实很宽泛，跟实际的项目联系得比较紧密。像上一个topic说的，对于不同的应用场景，关注的metric自然也就不一样。比如有时候还需要观察ROC曲线的形状。
+这个问题跟实际的项目联系得比较紧密。像上一个topic说的，对于不同的应用场景，关注的metric自然也就不一样。比如有时候还需要观察ROC曲线的形状。
 
 上面我举的例子其实在实际中也常会遇到，模型在训练中，train loss越来越小，eval loss越来越大，同时train/eval auc都在提高。个人觉得不能够单一的来通过cross entropy / log loss这类指标来判断是否过拟合。而应该按实际的需求来选择是否继续训练。比如在推荐场景中，更注重的排序的结果。单纯看loss并不是一个合理的指标，有些太形而上学了，从practical的角度来说，一般还是应该选择更高auc的模型。
 
