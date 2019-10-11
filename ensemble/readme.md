@@ -157,7 +157,7 @@ boosting希望每个弱模型尽量不相关。 那么我们必然希望每个�
 
 缺点：
 - 对于异常点就会很敏感。因而通常在噪音比较多的数据集上表现不佳。
-- 模型结果无法用于概率估计，这是算法指数loss导致的。
+- 模型结果无法用于概率估计，因为算法指数loss，不能线性表达概率。
 
 ### 不同的loss
 下图可以看出，exp的loss 下降的最快。adaboost有一个很好的性质就是，当模型已经可以在training数据上完全可分时，继续增加弱分类器， 在test集合上仍然可以有更好的表现。这是因为adaboost实际的target在最小化exp那么线的lower bound。SVM就没有这样的性质。
@@ -178,14 +178,18 @@ boosting希望每个弱模型尽量不相关。 那么我们必然希望每个�
 
 当然我们的loss函数是可以随便换的，l1/l2, exp, square loss 等等，所以说gradient boosting是泛化的adaboost，
 
-### Bias & Variance about Boosting
+## Bias & Variance about Boosting
 
 准确地说，Bagging是降低variance的，而Boosting是同时降低variance和bias。
 
 boosting是seqentially累加模型，自然就会导致模型之间强相关。套用上面bagging提到的公式，强相关的模型无法显著降低variance。更多的通过调整样本weight，降低bias来提升模型效果。
 
-## xgboost
+## GBDT
+GBDT 就是boosting 模型使用decision tree。由于用的是残差，也就是累加，所以用于分类树是没有意义的。所以GBDT中的树都是回归树，不是分类树。
+ 
+ 使用树作为子模型有很多好处，比如树可以处理missing feature，特征缺失对于树来说只是少了一些路径。对于outlier、噪音也不敏感。树的深度也方便调整等等
 
+如果做的是regression， 常见的loss就是l2 loss。 如果是classification，常见的有KL、logloss等
 
 # Stacking Methods
 
