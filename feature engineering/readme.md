@@ -13,3 +13,9 @@
 5. 所得到的数据易消除异方差问题。
 
 6. 在经济学中，常取自然对数再做回归，这时回归方程为 lnY=a lnX+b ，两边同时对X求导，1/Y*(DY/DX)=a*1/X, b=(DY/DX)*(X/Y)=(DY*X)/(DX*Y)=(DY/Y)/(DX/X) 这正好是弹性(物理)的定义。当然，如果数据集中有负数当然就不能取对数了。实践中，取对数的一般是水平量，而不是比例数据，例如变化率等。
+
+# pow-law distribution, zipf law
+
+# box-cox 变换
+
+# dummy encoding, one hot encoding 
