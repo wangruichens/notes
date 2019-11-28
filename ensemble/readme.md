@@ -15,6 +15,7 @@
 >> - [Bias & Variance about Boosting](#bias--variance-about-boosting)
 
 > - [Stacking Methods](#stacking-methods)
+> - [Blending Methods](#blending-methods)
 # Basic Concepts
 
 Ensemble的主要思想是训练多个模型，分别从不同的角度去解决同一个机器学习任务。一般来说，模型的error主要来自三个方面：variance, bias 和noise。通过ensemble可以提高模型最终的stability，从而一定程度上减少这些error。比较常见的ensemble方法有：
