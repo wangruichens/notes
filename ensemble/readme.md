@@ -193,4 +193,16 @@ GBDT 就是boosting 模型使用decision tree。由于用的是残差，也就�
 
 # Stacking Methods
 
+* [img comes from here](https://github.com/Anfany/Machine-Learning-for-Beginner-by-Python3/tree/master/Blending)
+
+![img](img/15.png)
+
+![img](img/16.png)
+
 将几个模型结果作为input feature。再加上一层LR。为了防止有的模型作弊（过拟合、欠拟合etc）, 需要将训练数据再单独保存一份来训练LR。
+
+# Blending Methods
+
+* [img comes from here](https://github.com/Anfany/Machine-Learning-for-Beginner-by-Python3/tree/master/Blending)
+
+![img](img/14.png)
