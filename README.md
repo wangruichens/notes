@@ -1,5 +1,6 @@
 # My Notes
 
+> - [Cold Start Problem](cold%20start%20problem)
 > - [Machine Learning:Ensemble](ensemble)
 > - [Machine Learning:Evaluate Metrics](evaluate_metrics)
 > - [Machine Learning:Trees](trees)
