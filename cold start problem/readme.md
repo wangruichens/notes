@@ -8,6 +8,24 @@
 
 exploitation-exploration trade-off
 
+---
+
+以下内容摘自： https://zhuanlan.zhihu.com/p/32502139
+
+(千篇一律的新闻) 现在的新闻客户端都使用了机器学习进行智能排序，你有没有跟我一样的体验：
+
+- 某类型的新闻，你点击的越多，下次登录时就会看到的越多
+- 看到的越多，点的机会也就越多
+- 最后满眼的新闻都是千篇一律
+
+借着这个例子，我们说说把现实问题映射到监督学习的过程中存在的坑：
+
+历史数据的收集直接受到了算法影响，是有偏向性(Bias)的：算法推荐了一个新闻，用户才有机会给出反馈，系统才会收集到反馈。但是还有千千万万的新闻是没推荐出来的，用户不知道它们好不好，系统也没机会收集那些新闻的反馈
+正反馈是很容易获得的，负反馈却需要自己去猜：算法推荐了k个新闻，用户只点击其中的一个，这并不100%意味着是对剩下的新闻的否定：（1）这个新闻没有被用户注意到，（2）这个新闻用户也感兴趣喜欢，只是时间有限，这次没点
+结论：既然历史数据是受算法影响的，用户又只提供了正反馈，那么根据历史数据训练就会不断强化自己去推荐已经推荐过的东西，使得模型陷入一个局部最优，潜在的好的东西迟迟得不到推荐。
+
+---
+
 
 address这个问题：
 
@@ -42,7 +60,7 @@ collaborative filtering
 #### multi-armed bandits
 - eplison greedy
 - Upper Confidence Bounds (UCB) 
-- Thompson Sampling 
+- Thompson Sampling  (Bayesian)
 - EXP3
 
 类比强化学习（Based on PMF, decompose 用户的reward）：推荐一个item就类似于pull一个arm。 用户的反馈可以看作是reward。
@@ -56,6 +74,7 @@ Probabilistic Matrix Factorization (PMF)
 
 优势： bandit相比于正常MF模型，冷启动问题中recall结果更好，更适应稀疏情况，收敛更快。 
 
+相关MAB: https://banditalgs.com/2016/10/01/adversarial-bandits/
 
 ### ExcUseMe: Asking Users to Help in Item Cold-Start Recommendations
 
@@ -140,3 +159,4 @@ Recsys 2019的 best paper
 比较有意思了，仅供参考来看吧
 
 比较有价值的是作者公开了代码： https://github.com/MaurizioFD/RecSys2019_DeepLearning_Evaluation
+
