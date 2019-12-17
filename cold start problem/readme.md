@@ -144,6 +144,8 @@ github 代码： https://github.com/dawenl/vae_cf
 采用变分推断，KL divergence来生成隐式反馈。
 文章对比了： WMF,  SLIM, CDAE, NCF
 
+文章主要提出了基于多项分布的生成模型。同时修改了vae本身的目标函数，修改L为重建error - beta*约束error。 beta小于1, beta越小，先验的约束就越小，模型扭曲fit的能力就强。同时提出了模拟退火的算法来确定beta的最优值。Multi-VAE的模型更适应用户行为稀疏的情况。
+
 ### Neural Collaborative Filtering
 
 WWW 2017
